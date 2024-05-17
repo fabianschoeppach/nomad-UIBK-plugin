@@ -251,7 +251,7 @@ class ELNXRayFluorescence(XRayFluorescence, EntryData):
         """
         # TODO: Reader selection must be more specific
         if self.data_file.endswith('.txt'):
-            return XRFreader.read_UBIK_txt
+            return XRFreader.read_xrf_txt
 
     def write_xrf_data(
         self,
@@ -350,9 +350,8 @@ class ELNXRayFluorescence(XRayFluorescence, EntryData):
                     xrf_dict = read_function(file.name, logger)
                 if xrf_dict:
                     self.write_xrf_data(xrf_dict, archive, logger)
-                else:
-                    if logger is not None:
-                        logger.warn(f'No XRF data found in file: "{self.data_file}".')
+                elif logger is not None:
+                    logger.warn(f'No XRF data found in file: "{self.data_file}".')
         super().normalize(archive, logger)
         if not self.results:
             return
