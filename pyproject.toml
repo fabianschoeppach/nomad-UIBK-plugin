@@ -25,7 +25,10 @@ maintainers = [
     { name = "Fabian Schöppach", email = "fabian.schoeppach@physik.hu-berlin.de" },
 ]
 license = { file = "LICENSE" }
-dependencies = ["nomad-lab>=1.2.2dev578"]
+dependencies = [
+    "nomad-lab>=1.2.2dev578",
+    "nomad-measurements>=0.0.05"
+    ]
 
 [project.urls]
 Repository = "https://github.com/fabianschoeppach/nomad-ubik-plugin"
@@ -74,7 +77,7 @@ select = [
     "UP",
     # isort
     "I",
-    # pylint 
+    # pylint
     "PL",
 ]
 
