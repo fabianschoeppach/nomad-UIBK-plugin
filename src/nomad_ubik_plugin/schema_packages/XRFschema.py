@@ -32,10 +32,10 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
-    dict,
 )
 
 import numpy as np
+from nomad.config import config
 from nomad.datamodel.data import (
     ArchiveSection,
     EntryData,
@@ -56,13 +56,7 @@ from nomad.datamodel.results import (
     Results,
     StructuralProperties,
 )
-from nomad.metainfo import (
-    Datetime,
-    Package,
-    Quantity,
-    Section,
-    SubSection,
-)
+from nomad.metainfo import Datetime, Quantity, SchemaPackage, Section, SubSection
 from nomad_measurements import (
     NOMADMeasurementsCategory,
 )
@@ -73,8 +67,11 @@ from nomad_ubik_plugin.schema_packages import XRFreader
 if TYPE_CHECKING:
     from structlog.stdlib import BoundLogger
 
+configuration = config.get_plugin_entry_point(
+    'nomad_ubik_plugin.schema_packages:XRFschema'
+)
 
-m_package = Package(name='nomad_xrf')
+m_package = SchemaPackage(name='nomad_xrf')
 
 
 class XRFElementalComposition(ElementalComposition):
