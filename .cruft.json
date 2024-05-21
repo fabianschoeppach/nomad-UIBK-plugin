@@ -1,6 +1,6 @@
 {
   "template": "https://github.com/FAIRmat-NFDI/cookiecutter-nomad-plugin",
-  "commit": "5960c08ce84212c9b40014b3d8a7470a32c77b5f",
+  "commit": "9fd908197243621152ebf13626786c92df784fd0",
   "checkout": null,
   "context": {
     "cookiecutter": {
