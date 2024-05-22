@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from nomad.datamodel.datamodel import EntryArchive
     from structlog.stdlib import BoundLogger
 
-configuration = config.get_plugin_entry_point('nomad_ubik_plugin.parsers:XRFparser')
+configuration = config.get_plugin_entry_point('nomad_ubik_plugin.parsers:xrfparser')
 
 class RawFileXRFData(EntryData):
     """

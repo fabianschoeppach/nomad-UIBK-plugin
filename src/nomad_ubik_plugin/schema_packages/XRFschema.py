@@ -68,7 +68,7 @@ if TYPE_CHECKING:
     from structlog.stdlib import BoundLogger
 
 configuration = config.get_plugin_entry_point(
-    'nomad_ubik_plugin.schema_packages:XRFschema'
+    'nomad_ubik_plugin.schema_packages:xrfschema'
 )
 
 m_package = SchemaPackage(name='nomad_xrf')
