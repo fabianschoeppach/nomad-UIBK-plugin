@@ -113,5 +113,5 @@ where = ["src"]
 [project.entry-points.'nomad.plugin']
 myparser = "nomad_ubik_plugin.parsers:myparser"
 mypackage = "nomad_ubik_plugin.schema_packages:mypackage"
-
-
+XRFparser = "nomad_ubik_plugin.parsers:XRFparser"
+XRFschema = "nomad_ubik_plugin.schema_packages:XRFschema"
