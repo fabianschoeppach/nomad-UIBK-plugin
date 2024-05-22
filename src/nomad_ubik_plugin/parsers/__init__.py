@@ -17,17 +17,17 @@ myparser = MyParserEntryPoint(
     mainfile_name_re='.*\.myparser',
 )
 
-class XRFParserEntryPoint(ParserEntryPoint):
-    parameter: int = Field(0, description='Custom configuration parameter')
+# class XRFParserEntryPoint(ParserEntryPoint):
+#     parameter: int = Field(0, description='Custom configuration parameter')
 
-    def load(self):
-        from nomad_ubik_plugin.parsers.XRFparser import XRFParser
+#     def load(self):
+#         from nomad_ubik_plugin.parsers.XRFparser import XRFParser
 
-        return XRFParser(**self.dict())
+#          return XRFParser(**self.dict())
 
 
-xrfparser = XRFParserEntryPoint(
-    name='XRFParser',
-    description='XRF Parser defined using the new plugin mechanism.',
-    mainfile_name_re='.*\.xrfparser',
-)
+# xrfparser = XRFParserEntryPoint(
+#     name='XRFParser',
+#     description='XRF Parser defined using the new plugin mechanism.',
+#     mainfile_name_re='.*\.xrfparser',
+# )
