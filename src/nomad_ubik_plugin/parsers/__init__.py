@@ -30,5 +30,6 @@ class XRFParserEntryPoint(ParserEntryPoint):
 xrfparser = XRFParserEntryPoint(
     name='XRFParser',
     description='XRF Parser defined using the new plugin mechanism.',
-    mainfile_name_re='.*\.xrfparser',
+    mainfile_name_re='.*\.txt',
+    mainfile_content_re='PositionType\s+Application\s+Sample\s+name\s+Date\s+\n[A-Z0-9-]+\s+Quant\s+analysis',
 )
