@@ -41,7 +41,7 @@ class XRFParser(MatchingParser):
         logger: 'BoundLogger',
         child_archives: dict[str, 'EntryArchive'] = None,
     ) -> None:
-        logger.info('MyParser.parse', parameter=configuration.parameter)
+        logger.info('XRFParser.parse')
         data_file = mainfile.split('/')[-1]
         entry = ELNXRayFluorescence.m_from_dict(ELNXRayFluorescence.m_def.a_template)
         entry.data_file = data_file
