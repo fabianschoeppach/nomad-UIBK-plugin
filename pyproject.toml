@@ -114,3 +114,4 @@ where = ["src"]
 myparser = "nomad_ubik_plugin.parsers:myparser"
 mypackage = "nomad_ubik_plugin.schema_packages:mypackage"
 xrfschema = "nomad_ubik_plugin.schema_packages:xrfschema"
+xrfparser = "nomad_ubik_plugin.parsers:xrfparser"
