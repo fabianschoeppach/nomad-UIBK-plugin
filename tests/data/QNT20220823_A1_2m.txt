@@ -1,0 +1,40 @@
+                                    Quantitative Analysis Result                                    
+PositionType              Application               Sample name                     Date            
+A-1     Quant analysis    SS_SiO2_CIGS_st           20220823_A1_2m                  2022- 9- 1 11:01
+                                                                                                    
+Component            CIGS         Cu          In          Ga          Se        MoLayer       Mo    
+Analyzed value         2.506      28.413      17.179       5.899      48.509       295.6     100.000
+Unit                      um         at%         at%         at%         at%          nm       mass%
+                                                                                                    
+Component           TiLayer       Ti          Na          Al          Si          P           S     
+Analyzed value         155.1     100.000       0.083       0.026      32.000       0.009       0.004
+Unit                      nm       mass%       mass%       mass%       mass%       mass%       mass%
+                                                                                                    
+Component             Cl          K           Ca          Ti          V           Cr          Mn    
+Analyzed value         0.007       2.230       0.005       0.016       0.075      14.000       0.622
+Unit                   mass%       mass%       mass%       mass%       mass%       mass%       mass%
+                                                                                                    
+Component             Fe          Co          Ni          Cu                                        
+Analyzed value        50.800       0.039       0.034       0.012                                    
+Unit                   mass%       mass%       mass%       mass%                                    
+                                                                                                    
+Component            CIGS         Cu          Ga          Se        MoLayer     TiLayer             
+Element line           In-KA       Cu-KA       Ga-KA       Se-KA       Mo-KA       Ti-KA            
+Peak intensity      75.60331   613.75255   153.39145  1416.68603   559.53932     6.48511            
+BG intensity         8.18314     1.78306     1.97573     3.16844     6.17783     0.15205            
+Net intensity       67.42017   611.96949   151.41572  1413.51759   553.36149     6.33306            
+Drift corrected     67.42017   611.96949   151.41572  1413.51759   553.36149     6.33306            
+Application result     2.506      28.413       5.899      48.509       295.6       155.1            
+                                                                                                    
+Element line         In-KA       In-KA       In-KA       Cu-KA       Cu-KA       Cu-KA       Ga-KA  
+Peak/BG                 Peak         BG1         BG2        Peak         BG1         BG2        Peak
+Meas. intensity     75.60331     8.93593     7.32280   613.75255     1.93129     1.58626   153.39145
+                                                                                                    
+Element line         Ga-KA       Ga-KA       Se-KA       Se-KA       Se-KA       Mo-KA       Mo-KA  
+Peak/BG                  BG1         BG2        Peak         BG1         BG2        Peak         BG1
+Meas. intensity      1.94062     2.01084  1416.68603     3.17834     3.15821   559.53932     6.62328
+                                                                                                    
+Element line         Mo-KA       Ti-KA       Ti-KA       Ti-KA                                      
+Peak/BG                  BG2        Peak         BG1         BG2                                    
+Meas. intensity      5.53638     6.48511     0.14283     0.15944                                    
+____________________________________________________________________________________________________
