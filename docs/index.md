@@ -1,18 +1,15 @@
 # Welcome to the `nomad-ubik-plugin` documentation
 
-UBIK schema and parser collection for NOMAD plattform.
-
 ## Introduction
 
-!!! note "Attention"
-    TODO
+This software is a plugin for the [NOMAD](https://nomad-lab.eu/nomad-lab/) research data management system.
+It provides a collection of schemas and parsers tailored to measurement methods around fundamental solar cell research.
+It is intended to run on a self-hosted version of NOMAD called [Oasis](https://nomad-lab.eu/nomad-lab/nomad-oasis.html).
 
 <div markdown="block" class="home-grid">
 <div markdown="block">
 
 ### Tutorial
-
-TODO
 
 - [Tutorial](tutorial/tutorial.md)
 
@@ -26,7 +23,6 @@ How-to guides provide step-by-step instructions for a wide range of tasks, with 
 - [Install this plugin](how_to/install_this_plugin.md)
 - [Use this plugin](how_to/use_this_plugin.md)
 - [Contribute to this plugin](how_to/contribute_to_this_plugin.md)
-- [Contribute to the documentation](how_to/contribute_to_the_documentation.md)
 
 </div>
 
