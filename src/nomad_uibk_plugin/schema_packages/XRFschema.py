@@ -125,6 +125,24 @@ class XRFLayer(StructuralProperties):
     elements = SubSection(section_def=XRFElementalComposition, repeats=True)
 
 
+class CIGSLayer(XRFLayer):
+    """
+    Section extending XRFLayer with CIGS relevant properties.
+    """
+
+    GGI = Quantity(
+        type=np.dtype(np.float64),
+        a_eln=dict(component='NumberEditQuantity'),
+        description='Gallium to Gallium+Indium ratio',
+    )
+
+    CGI = Quantity(
+        type=np.dtype(np.float64),
+        a_eln=dict(component='NumberEditQuantity'),
+        description='Copper to Gallium+Indium ratio',
+    )
+
+
 class XRFResult(MeasurementResult):
     """
     Section containing the result of an X-ray fluorescence measurement.
