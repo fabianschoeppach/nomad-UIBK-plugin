@@ -268,6 +268,31 @@ class ELNXRayFluorescence(XRayFluorescence, EntryData):
         if self.data_file.endswith('.txt'):
             return XRFreader.read_xrf_txt
 
+    def calculate_GGI_CGI(self, list_of_ElementalCompositions) -> tuple[float, float]:
+        """
+        Calculate GGI and CGI from the list of ElementalCompositions.
+
+        Args:
+            list_of_ElementalCompositions (list[XRFElementalComposition]): List of
+            ElementalCompositions.
+
+        Returns:
+            tuple[float, float]: GGI and CGI values.
+        """
+        gallium = 0
+        indium = 0
+        copper = 0
+        for element in list_of_ElementalCompositions:
+            if element.element == 'Ga':
+                gallium = element.atomic_fraction
+            elif element.element == 'In':
+                indium = element.atomic_fraction
+            elif element.element == 'Cu':
+                copper = element.atomic_fraction
+        GGI = gallium / (gallium + indium)
+        CGI = copper / (gallium + indium)
+        return GGI, CGI
+
     def write_xrf_data(
         self,
         xrf_dict: dict[str, Any],
@@ -309,13 +334,25 @@ class ELNXRayFluorescence(XRayFluorescence, EntryData):
                             ),
                         )
                     )
-                list_of_XRFLayers.append(
-                    XRFLayer(
-                        name=layer,
-                        thickness=content.get('thickness', None),
-                        elements=list_of_ElementalCompositions,
+                if layer == 'CIGS':
+                    GGI, CGI = self.calculate_GGI_CGI(list_of_ElementalCompositions)
+                    list_of_XRFLayers.append(
+                        CIGSLayer(
+                            name=layer,
+                            thickness=content.get('thickness', None),
+                            elements=list_of_ElementalCompositions,
+                            GGI=GGI,
+                            CGI=CGI,
+                        )
                     )
-                )
+                else:
+                    list_of_XRFLayers.append(
+                        XRFLayer(
+                            name=layer,
+                            thickness=content.get('thickness', None),
+                            elements=list_of_ElementalCompositions,
+                        )
+                    )
 
             sample = CompositeSystemReference(
                 lab_id=data.get('sample_name', None),
