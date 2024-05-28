@@ -75,9 +75,12 @@ m_package = SchemaPackage(name='nomad_xrf')
 
 
 class XRFElementalComposition(ElementalComposition):
-    """
-    Section extending ElementalComposition with XRF relevant properties.
-    """
+    m_def = Section(
+        description="""
+        Section extending ElementalComposition with XRF relevant properties.
+        """,
+        label_quantity='element',
+    )
 
     line = Quantity(
         type=str,
