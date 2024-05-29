@@ -1,4 +1,4 @@
-# Welcome to the `nomad-ubik-plugin` documentation
+# Welcome to the `nomad-uibk-plugin` documentation
 
 ## Introduction
 

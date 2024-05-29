@@ -16,7 +16,7 @@ from nomad.datamodel.metainfo.annotations import ELNAnnotation, ELNComponentEnum
 from nomad.metainfo import Quantity, SchemaPackage
 
 configuration = config.get_plugin_entry_point(
-    'nomad_ubik_plugin.schema_packages:mypackage'
+    'nomad_uibk_plugin.schema_packages:mypackage'
 )
 
 m_package = SchemaPackage()

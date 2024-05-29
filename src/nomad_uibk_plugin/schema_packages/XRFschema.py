@@ -62,13 +62,13 @@ from nomad_measurements import (
 )
 from nomad_measurements.utils import merge_sections
 
-from nomad_ubik_plugin.schema_packages import XRFreader
+from nomad_uibk_plugin.schema_packages import XRFreader
 
 if TYPE_CHECKING:
     from structlog.stdlib import BoundLogger
 
 configuration = config.get_plugin_entry_point(
-    'nomad_ubik_plugin.schema_packages:xrfschema'
+    'nomad_uibk_plugin.schema_packages:xrfschema'
 )
 
 m_package = SchemaPackage(name='nomad_xrf')

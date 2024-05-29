@@ -1,8 +1,8 @@
-site_name: nomad-ubik-plugin
-site_description: UBIK schema and parser collection for NOMAD plattform.
+site_name: nomad-uibk-plugin
+site_description: UIBK schema and parser collection for NOMAD plattform.
 site_author: Fabian Schöppach
 
-repo_url: https://github.com/fabianschoeppach/nomad-ubik-plugin
+repo_url: https://github.com/fabianschoeppach/nomad-uibk-plugin
 
 nav:
   - Home: index.md

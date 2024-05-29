@@ -1,7 +1,7 @@
 import logging
 
 from nomad.datamodel import EntryArchive
-from nomad_ubik_plugin.parsers.myparser import MyParser
+from nomad_uibk_plugin.parsers.myparser import MyParser
 
 
 def test_parse_file():

@@ -7,13 +7,13 @@ from nomad.metainfo import Quantity
 from nomad.parsing.parser import MatchingParser
 from nomad_measurements.utils import create_archive
 
-from nomad_ubik_plugin.schema_packages.XRFschema import ELNXRayFluorescence
+from nomad_uibk_plugin.schema_packages.XRFschema import ELNXRayFluorescence
 
 if TYPE_CHECKING:
     from nomad.datamodel.datamodel import EntryArchive
     from structlog.stdlib import BoundLogger
 
-configuration = config.get_plugin_entry_point('nomad_ubik_plugin.parsers:xrfparser')
+configuration = config.get_plugin_entry_point('nomad_uibk_plugin.parsers:xrfparser')
 
 
 class RawFileXRFData(EntryData):

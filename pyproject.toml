@@ -13,8 +13,8 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "License :: OSI Approved :: Apache Software License",
 ]
-name = "nomad-ubik-plugin"
-description = "UBIK schema and parser collection for NOMAD plattform."
+name = "nomad-uibk-plugin"
+description = "UIBK schema and parser collection for NOMAD plattform."
 version = "0.1.0"
 readme = "README.rst"
 requires-python = ">=3.9"
@@ -31,7 +31,7 @@ dependencies = [
     ]
 
 [project.urls]
-Repository = "https://github.com/fabianschoeppach/nomad-ubik-plugin"
+Repository = "https://github.com/fabianschoeppach/nomad-uibk-plugin"
 
 [project.optional-dependencies]
 dev = ["ruff", "pytest", "structlog"]
@@ -111,7 +111,7 @@ package-dir = { "" = "src" }
 where = ["src"]
 
 [project.entry-points.'nomad.plugin']
-myparser = "nomad_ubik_plugin.parsers:myparser"
-mypackage = "nomad_ubik_plugin.schema_packages:mypackage"
-xrfschema = "nomad_ubik_plugin.schema_packages:xrfschema"
-xrfparser = "nomad_ubik_plugin.parsers:xrfparser"
+myparser = "nomad_uibk_plugin.parsers:myparser"
+mypackage = "nomad_uibk_plugin.schema_packages:mypackage"
+xrfschema = "nomad_uibk_plugin.schema_packages:xrfschema"
+xrfparser = "nomad_uibk_plugin.parsers:xrfparser"

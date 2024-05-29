@@ -74,7 +74,7 @@ def group_composition_into_layers(
                 )
             elif logger is not None:
                 logger.warn(
-                    'read_UBIK_txt found unknown unit "{unit}" '
+                    'read_UIBK_txt found unknown unit "{unit}" '
                     'in file: "{file_path}"'
                 )
     return layers
@@ -135,7 +135,7 @@ def sort_intensity_values_into_layers(  # noqa: PLR0913
 
 def read_xrf_txt(file_path: str, logger: 'BoundLogger' = None) -> dict[str, Any]:  # noqa: PLR0915, PLR0912
     """
-    Function for reading the X-ray fluorescence data in a UBIK `.txt` file.
+    Function for reading the X-ray fluorescence data in a UIBK `.txt` file.
 
     Args:
         file_path (str): The path to the `.txt` file.
@@ -262,7 +262,7 @@ def read_xrf_txt(file_path: str, logger: 'BoundLogger' = None) -> dict[str, Any]
                 ):
                     if logger is not None:
                         logger.warn(
-                            'read_UBIK_txt found inconsistent number of '
+                            'read_UIBK_txt found inconsistent number of '
                             'intensity values in file: "{file_path}"'
                         )
 
@@ -291,12 +291,12 @@ def read_xrf_txt(file_path: str, logger: 'BoundLogger' = None) -> dict[str, Any]
                     xrf_dict[application]['layers'] = layers
                 elif logger is not None:
                     logger.warn(
-                        'read_UBIK_txt found duplicate application "{application}"'
+                        'read_UIBK_txt found duplicate application "{application}"'
                         ' in file: "{file_path}".'
                     )
             elif logger is not None:
                 logger.warn(
-                    'read_UBIK_txt failed to extract all necessary information '
+                    'read_UIBK_txt failed to extract all necessary information '
                     'from file: "{file_path}"'
                 )
 

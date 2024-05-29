@@ -1,6 +1,6 @@
-# nomad-ubik-plugin
+# nomad-uibk-plugin
 
-UBIK schema and parser collection for NOMAD plattform.
+UIBK schema and parser collection for NOMAD plattform.
 
 ----
 
@@ -62,7 +62,7 @@ python -m build --sdist
 You can install the package with pip:
 
 ```
-pip install dist/nomad-ubik-plugin-0.1.0
+pip install dist/nomad-uibk-plugin-0.1.0
 ```
 
 Read more about python packages, `pyproject.toml`, and how to upload packages to PyPI
@@ -70,7 +70,7 @@ on the [PyPI documentation](https://packaging.python.org/en/latest/tutorials/pac
 
 ### Documentation on Github pages
 
-To deploy documentation on Github pages, make sure to [enable GitHub pages via the repo settings](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site#publishing-from-a-branch). 
+To deploy documentation on Github pages, make sure to [enable GitHub pages via the repo settings](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site#publishing-from-a-branch).
 
 To view the documentation locally, install the documentation related packages using:
 
@@ -85,9 +85,9 @@ mkdocs serve
 
 ### Template update
 
-We use cruft to update the project based on template changes. A `cruft-update.yml` is included in Github workflows to automatically check for updates and create pull requests to apply updates. Follow the [instructions](https://github.blog/changelog/2022-05-03-github-actions-prevent-github-actions-from-creating-and-approving-pull-requests/) on how to enable Github Actions to create pull requests. 
+We use cruft to update the project based on template changes. A `cruft-update.yml` is included in Github workflows to automatically check for updates and create pull requests to apply updates. Follow the [instructions](https://github.blog/changelog/2022-05-03-github-actions-prevent-github-actions-from-creating-and-approving-pull-requests/) on how to enable Github Actions to create pull requests.
 
 To run the check for updates locally, follow the instructions on [`cruft` website](https://cruft.github.io/cruft/#updating-a-project).
 
 ### License
-Distributed under the terms of the `Apache Software License 2.0`_ license, "nomad-ubik-plugin" is free and open source software
+Distributed under the terms of the `Apache Software License 2.0`_ license, "nomad-uibk-plugin" is free and open source software
