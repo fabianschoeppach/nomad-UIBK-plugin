@@ -75,9 +75,12 @@ m_package = SchemaPackage(name='nomad_xrf')
 
 
 class XRFElementalComposition(ElementalComposition):
-    """
-    Section extending ElementalComposition with XRF relevant properties.
-    """
+    m_def = Section(
+        description="""
+        Section extending ElementalComposition with XRF relevant properties.
+        """,
+        label_quantity='element',
+    )
 
     line = Quantity(
         type=str,
@@ -123,6 +126,24 @@ class XRFLayer(StructuralProperties):
     )
 
     elements = SubSection(section_def=XRFElementalComposition, repeats=True)
+
+
+class CIGSLayer(XRFLayer):
+    """
+    Section extending XRFLayer with CIGS relevant properties.
+    """
+
+    GGI = Quantity(
+        type=np.dtype(np.float64),
+        a_eln=dict(component='NumberEditQuantity'),
+        description='Gallium to Gallium+Indium ratio',
+    )
+
+    CGI = Quantity(
+        type=np.dtype(np.float64),
+        a_eln=dict(component='NumberEditQuantity'),
+        description='Copper to Gallium+Indium ratio',
+    )
 
 
 class XRFResult(MeasurementResult):
@@ -250,6 +271,31 @@ class ELNXRayFluorescence(XRayFluorescence, EntryData):
         if self.data_file.endswith('.txt'):
             return XRFreader.read_xrf_txt
 
+    def calculate_GGI_CGI(self, list_of_ElementalCompositions) -> tuple[float, float]:
+        """
+        Calculate GGI and CGI from the list of ElementalCompositions.
+
+        Args:
+            list_of_ElementalCompositions (list[XRFElementalComposition]): List of
+            ElementalCompositions.
+
+        Returns:
+            tuple[float, float]: GGI and CGI values.
+        """
+        gallium = 0
+        indium = 0
+        copper = 0
+        for element in list_of_ElementalCompositions:
+            if element.element == 'Ga':
+                gallium = element.atomic_fraction
+            elif element.element == 'In':
+                indium = element.atomic_fraction
+            elif element.element == 'Cu':
+                copper = element.atomic_fraction
+        GGI = gallium / (gallium + indium)
+        CGI = copper / (gallium + indium)
+        return GGI, CGI
+
     def write_xrf_data(
         self,
         xrf_dict: dict[str, Any],
@@ -291,13 +337,25 @@ class ELNXRayFluorescence(XRayFluorescence, EntryData):
                             ),
                         )
                     )
-                list_of_XRFLayers.append(
-                    XRFLayer(
-                        name=layer,
-                        thickness=content.get('thickness', None),
-                        elements=list_of_ElementalCompositions,
+                if layer == 'CIGS':
+                    GGI, CGI = self.calculate_GGI_CGI(list_of_ElementalCompositions)
+                    list_of_XRFLayers.append(
+                        CIGSLayer(
+                            name=layer,
+                            thickness=content.get('thickness', None),
+                            elements=list_of_ElementalCompositions,
+                            GGI=GGI,
+                            CGI=CGI,
+                        )
                     )
-                )
+                else:
+                    list_of_XRFLayers.append(
+                        XRFLayer(
+                            name=layer,
+                            thickness=content.get('thickness', None),
+                            elements=list_of_ElementalCompositions,
+                        )
+                    )
 
             sample = CompositeSystemReference(
                 lab_id=data.get('sample_name', None),
