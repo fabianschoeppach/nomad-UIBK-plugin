@@ -46,12 +46,12 @@ from nomad.datamodel.metainfo.annotations import (
 )
 from nomad.datamodel.metainfo.basesections import (
     CompositeSystemReference,
+    ElementalComposition,
     Measurement,
     MeasurementResult,
     ReadableIdentifiers,
 )
 from nomad.datamodel.results import (
-    ElementalComposition,
     Properties,
     Results,
     StructuralProperties,
@@ -105,6 +105,17 @@ class XRFElementalComposition(ElementalComposition):
         a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity),
         description='Optional 2nd backgound intensity',
     )
+
+    def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger'):
+        """
+        The normalize function of the `XRFElementalComposition` section.
+
+        Args:
+            archive (EntryArchive): The archive containing the section that is being
+            normalized.
+            logger (BoundLogger): A structlog logger.
+        """
+        super().normalize(archive, logger)
 
 
 class XRFLayer(StructuralProperties):
@@ -324,19 +335,17 @@ class ELNXRayFluorescence(XRayFluorescence, EntryData):
             for layer, content in data.get('layers', []).items():
                 list_of_ElementalCompositions = []
                 for element, attributes in content.get('elements', {}).items():
-                    list_of_ElementalCompositions.append(
-                        XRFElementalComposition(
-                            element=element,
-                            mass_fraction=attributes.get('mass_fraction'),
-                            atomic_fraction=attributes.get('atomic_fraction'),
-                            line=attributes.get('line'),
-                            intensity_peak=attributes.get('intensity_peak'),
-                            intensity_background=attributes.get('intensity_background'),
-                            intensity_background_2=attributes.get(
-                                'intensity_background_2'
-                            ),
-                        )
+                    xel = XRFElementalComposition(
+                        element=element,
+                        mass_fraction=attributes.get('mass_fraction'),
+                        atomic_fraction=attributes.get('atomic_fraction'),
+                        line=attributes.get('line'),
+                        intensity_peak=attributes.get('intensity_peak'),
+                        intensity_background=attributes.get('intensity_background'),
+                        intensity_background_2=attributes.get('intensity_background_2'),
                     )
+                    xel.normalize(archive, logger)
+                    list_of_ElementalCompositions.append(xel)
                 if layer == 'CIGS':
                     GGI, CGI = self.calculate_GGI_CGI(list_of_ElementalCompositions)
                     list_of_XRFLayers.append(
