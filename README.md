@@ -1,29 +1,40 @@
 # nomad-uibk-plugin
 
-UIBK schema and parser collection for NOMAD plattform.
+[![Python Version](https://img.shields.io/badge/python-3.9-blue.svg)](https://python.org)
+![GitHub Issues](https://img.shields.io/github/issues/fabianschoeppach/nomad-UIBK-plugin)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-----
+This software is a plugin for the [NOMAD](https://nomad-lab.eu/nomad-lab/) research data management system.  
+It provides a collection of schemas and parsers tailored to measurement methods around fundamental solar cell research.  
+It is intended to run on a self-hosted version of NOMAD called [Oasis](https://nomad-lab.eu/nomad-lab/nomad-oasis.html).
 
-This `nomad`_ plugin was generated with `Cookiecutter`_ along with `@nomad`_'s `cookiecutter-nomad-plugin`_ template.
+## Installation
 
+### For Usage in an NOMAD Distribution Image
 
-### Install
+To use this plugin in an NOMAD distribution image such as [this one](https://github.com/fabianschoeppach/nomad-UIBK-image) simply list it in the `plugin.txt` and generate a new image.
 
-You should create a virtual environment. You will need the `nomad-lab` package (and `pytest`).
-We recommend using Python 3.9.
+### Stand alone installation and/or to customize the plugin
+
+To install this package, it is recommended to create and activate a virtual environment.
+This practice isolates the package dependencies and prevents conflicts with other globally installed Python packages.
+Since the codebase of NOMAD is currently based on Python 3.9, using that version is recommended.
 
 ```sh
-python3 -m venv .pyenv
+python3.9 -m venv .pyenv
 source .pyenv/bin/activate
+```
+
+The `nomad-lab` package is needed to use and test the plugin functionalities:
+
+```sh
 pip install --upgrade pip
 pip install -e '.[dev]' --index-url https://gitlab.mpcdf.mpg.de/api/v4/projects/2187/packages/pypi/simple
 ```
 
-**Note!**
-Until we have an official pypi NOMAD release with the plugins functionality. Make
-sure to include NOMAD's internal package registry (e.g. via `--index-url`).
+> **Note:** As of now, there is no official pypi NOMAD release with the plugin functionality. Therefore, make sure to include internal package registry of NOMAD (e.g. via `--index-url`).
 
-### Testing
+#### Testing
 
 You can run automated tests with `pytest`:
 
@@ -31,13 +42,13 @@ You can run automated tests with `pytest`:
 pytest -svx tests
 ```
 
-### Run linting
+#### Run linting
 
 ```sh
 ruff check .
 ```
 
-### Run auto-formatting
+#### Run auto-formatting
 
 This is entirely optional. To add this as a check in github actions pipeline, uncomment the `ruff-formatting` step in `./github/workflows/actions.yaml`.
 
@@ -68,26 +79,28 @@ pip install dist/nomad-uibk-plugin-0.1.0
 Read more about python packages, `pyproject.toml`, and how to upload packages to PyPI
 on the [PyPI documentation](https://packaging.python.org/en/latest/tutorials/packaging-projects/).
 
-### Documentation on Github pages
+## Technical details
 
-To deploy documentation on Github pages, make sure to [enable GitHub pages via the repo settings](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site#publishing-from-a-branch).
-
-To view the documentation locally, install the documentation related packages using:
-
-```sh
-pip install -r requirements_docs.txt
-```
-
-Run the documentation server:
-```sh
-mkdocs serve
-```
+This plugin was generated with `Cookiecutter` along with NOMAD's [cookiecutter-nomad-plugin template](https://github.com/blueraft/cookiecutter-nomad-plugin).
 
 ### Template update
 
-We use cruft to update the project based on template changes. A `cruft-update.yml` is included in Github workflows to automatically check for updates and create pull requests to apply updates. Follow the [instructions](https://github.blog/changelog/2022-05-03-github-actions-prevent-github-actions-from-creating-and-approving-pull-requests/) on how to enable Github Actions to create pull requests.
+We use cruft to update the project based on template changes. A `cruft-update.yml` is included in Github workflows to automatically check for updates and create pull requests to apply updates.  
+Follow the [instructions](https://github.blog/changelog/2022-05-03-github-actions-prevent-github-actions-from-creating-and-approving-pull-requests/) on how to enable Github Actions to create pull requests.
 
 To run the check for updates locally, follow the instructions on [`cruft` website](https://cruft.github.io/cruft/#updating-a-project).
 
+### Documentation on Github pages
+
+This project uses `mkdocs` and a automatic Github Workflow to deploy its documentation.
+Its content is entirely stored within markdown files (.md) in the `docs/` directory.
+
+To view the documentation locally, install the documentation related packages and run the documentation server:
+```sh
+pip install -r requirements_docs.txt
+mkdocs serve
+```
+
 ### License
-Distributed under the terms of the `Apache Software License 2.0`_ license, "nomad-uibk-plugin" is free and open source software
+Distributed under the terms of the [Apache Software License 2.0](LICENSE).
+`nomad-uibk-plugin` is free and open source software.
