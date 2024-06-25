@@ -63,6 +63,16 @@ class IVResult(ArchiveSection):
     )
 
 
+class IFMResult(ArchiveSection):
+    """ """
+
+    data_file = Quantity(
+        type=str,
+        description='Path to the IFM image file',
+        a_eln=ELNAnnotation(component=ELNComponentEnum.FileEditQuantity),
+    )
+
+
 class MicroCell(Sample):
     """
     Represents a microcell on the sample.
@@ -99,7 +109,7 @@ class MySample(Sample, EntryData):
 
     # Measurements on whole sample
     xrf_measurement = SubSection(section_def=XRFResult)
-    ifm_measurement = SubSection()
+    ifm_measurement = SubSection(section_def=IFMResult)
 
 
 m_package.__init_metainfo__()
