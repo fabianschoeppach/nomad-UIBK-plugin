@@ -78,6 +78,13 @@ class MicroCell(Sample):
     Represents a microcell on the sample.
     """
 
+    position = Quantity(
+        type=float,
+        shape=[2],
+        description='Position of the microcell on the sample',
+        a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity),
+    )
+
     # Measurements on microcell level
     ebic_measurement = SubSection(section_def=EBICResult)
     sem_measurement = SubSection(section_def=SEMResult)
