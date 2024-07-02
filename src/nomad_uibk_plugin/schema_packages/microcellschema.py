@@ -135,7 +135,9 @@ class MySample(Sample, EntryData, PlotSection):
         x_values, y_values = self.list_of_positions()
         figure = px.scatter(x=x_values, y=y_values)
         self.figures = []
-        self.figures.append(PlotlyFigure(label='test', figure=figure.to_plotly_json()))
+        self.figures.append(
+            PlotlyFigure(label='MicroCell Overview', figure=figure.to_plotly_json())
+        )
 
 
 m_package.__init_metainfo__()
