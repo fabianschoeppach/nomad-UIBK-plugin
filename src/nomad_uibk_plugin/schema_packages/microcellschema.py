@@ -16,6 +16,7 @@
 # limitations under the License.
 #
 
+import plotly.express as px
 from nomad.config import config
 from nomad.datamodel.data import ArchiveSection, EntryData
 from nomad.datamodel.metainfo.annotations import (
@@ -23,6 +24,7 @@ from nomad.datamodel.metainfo.annotations import (
     ELNComponentEnum,
 )
 from nomad.datamodel.metainfo.measurements import Sample
+from nomad.datamodel.metainfo.plot import PlotlyFigure, PlotSection
 from nomad.metainfo import Quantity, SchemaPackage, Section, SubSection
 
 from nomad_uibk_plugin.schema_packages.XRFschema import XRFResult
@@ -90,8 +92,11 @@ class MicroCell(Sample):
     sem_measurement = SubSection(section_def=SEMResult)
     iv_measurement = SubSection(section_def=IVResult)
 
+    # def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger'):
+    #     super().normalize()
 
-class MySample(Sample, EntryData):
+
+class MySample(Sample, EntryData, PlotSection):
     """
     Represents a sample.
     """
@@ -117,6 +122,20 @@ class MySample(Sample, EntryData):
     # Measurements on whole sample
     xrf_measurement = SubSection(section_def=XRFResult)
     ifm_measurement = SubSection(section_def=IFMResult)
+
+    def get_microcell_positions(self):
+        list_of_positions = [microcell.position for microcell in self.microcells]
+        x_values = [position[0] for position in list_of_positions]
+        y_values = [position[1] for position in list_of_positions]
+        return x_values, y_values
+
+    def normalize(self, archive, logger):
+        super().normalize(archive, logger)
+
+        x_values, y_values = self.list_of_positions()
+        figure = px.scatter(x=x_values, y=y_values)
+        self.figures = []
+        self.figures.append(PlotlyFigure(label='test', figure=figure.to_plotly_json()))
 
 
 m_package.__init_metainfo__()
