@@ -11,6 +11,7 @@ class UIBKCategory(EntryDataCategory):
 
     m_def = Category(label='UIBK', categories=[EntryDataCategory])
 
+
 class MySchemaPackageEntryPoint(SchemaPackageEntryPoint):
     parameter: int = Field(0, description='Custom configuration parameter')
 

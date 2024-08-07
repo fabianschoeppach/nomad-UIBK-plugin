@@ -27,12 +27,13 @@ from nomad.datamodel.metainfo.measurements import Sample
 from nomad.datamodel.metainfo.plot import PlotlyFigure, PlotSection
 from nomad.metainfo import Quantity, SchemaPackage, Section, SubSection
 
+from nomad_uibk_plugin.schema_packages import UIBKCategory
 from nomad_uibk_plugin.schema_packages.XRFschema import XRFResult
 
 configuration = config.get_plugin_entry_point(
     'nomad_uibk_plugin.schema_packages:microcellschema',
 )
-m_package = SchemaPackage()
+m_package = SchemaPackage(name='microcellschema')
 
 
 class SEMResult(ArchiveSection):
@@ -102,7 +103,7 @@ class MySample(Sample, EntryData, PlotSection):
     """
 
     m_def = Section(
-        categories=[],
+        categories=[UIBKCategory],
         label='MicroCell Sample',
         a_eln=ELNAnnotation(
             lane_width='600px',
@@ -132,8 +133,15 @@ class MySample(Sample, EntryData, PlotSection):
     def normalize(self, archive, logger):
         super().normalize(archive, logger)
 
-        x_values, y_values = self.list_of_positions()
+        x_values, y_values = self.get_microcell_positions()
         figure = px.scatter(x=x_values, y=y_values)
+        figure.update_layout(
+            title='MicroCell Overview',
+            xaxis_title='X',
+            yaxis_title='Y',
+            showlegend=False,
+        )
+
         self.figures = []
         self.figures.append(
             PlotlyFigure(label='MicroCell Overview', figure=figure.to_plotly_json())
