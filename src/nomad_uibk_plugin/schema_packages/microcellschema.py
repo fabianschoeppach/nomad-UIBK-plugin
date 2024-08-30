@@ -23,6 +23,7 @@ from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
     ELNComponentEnum,
 )
+from nomad.datamodel.metainfo.basesections import Measurement
 from nomad.datamodel.metainfo.measurements import Sample
 from nomad.datamodel.metainfo.plot import PlotlyFigure, PlotSection
 from nomad.metainfo import Quantity, SchemaPackage, Section, SubSection
@@ -34,6 +35,18 @@ configuration = config.get_plugin_entry_point(
     'nomad_uibk_plugin.schema_packages:microcellschema',
 )
 m_package = SchemaPackage(name='microcellschema')
+
+
+class Image(ArchiveSection):
+    m_def = Section(label_quantity='file_name')
+
+    file_name = Quantity(type=str, a_eln=dict(component='StringEditQuantity'))
+
+
+class MicroscopeMeasurement(Measurement):
+    """ "Base class for microscope measurements."""
+
+    images = SubSection(section_def=Image, label_quantity='file_name', repeats=True)
 
 
 class SEMResult(ArchiveSection):
@@ -97,7 +110,7 @@ class MicroCell(Sample):
     #     super().normalize()
 
 
-class MySample(Sample, EntryData, PlotSection):
+class UIBKSample(Sample, EntryData, PlotSection):
     """
     Represents a sample.
     """
@@ -134,18 +147,26 @@ class MySample(Sample, EntryData, PlotSection):
         super().normalize(archive, logger)
 
         x_values, y_values = self.get_microcell_positions()
-        figure = px.scatter(x=x_values, y=y_values)
-        figure.update_layout(
-            title='MicroCell Overview',
-            xaxis_title='X',
-            yaxis_title='Y',
-            showlegend=False,
-        )
+        if x_values and y_values:
+            if len(x_values) == len(y_values):
+                figure = px.scatter(x=x_values, y=y_values)
+                figure.update_layout(
+                    title='MicroCell Overview',
+                    xaxis_title='X',
+                    yaxis_title='Y',
+                    showlegend=False,
+                )
 
-        self.figures = []
-        self.figures.append(
-            PlotlyFigure(label='MicroCell Overview', figure=figure.to_plotly_json())
-        )
+                self.figures = []
+                self.figures.append(
+                    PlotlyFigure(
+                        label='MicroCell Overview', figure=figure.to_plotly_json()
+                    )
+                )
+            else:
+                logger.error('Unequal number of x and y values in microcell positions')
+        else:
+            logger.error('No microcell positions found')
 
 
 m_package.__init_metainfo__()

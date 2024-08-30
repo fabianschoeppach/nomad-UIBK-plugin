@@ -36,3 +36,24 @@ xrfparser = XRFParserEntryPoint(
     mainfile_name_re='.*\.txt',
     mainfile_content_re='PositionType\s+Application\s+Sample\s+name\s+Date\s+\n[A-Z0-9-]+\s+Quant\s+analysis',
 )
+
+# Microcell parsers
+
+
+class IFMParserEntryPoint(ParserEntryPoint):
+    """
+    IFM Parser plugin entry point.
+    """
+
+    def load(self):
+        # lazy import to avoid circular dependencies
+        from nomad_uibk_plugin.parsers.microcellparsers import IFMParser
+
+        return IFMParser(**self.dict())
+
+
+ifmparser = IFMParserEntryPoint(
+    name='IFMParser',
+    description='IFM Parser for Overview tiff files.',
+    mainfile_name_re='.*\.tiff',
+)
