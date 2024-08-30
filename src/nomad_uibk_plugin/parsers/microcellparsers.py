@@ -4,6 +4,7 @@ from typing import (
 )
 
 from nomad.config import config
+from nomad.datamodel import EntryArchive
 from nomad.datamodel.data import EntryData
 from nomad.datamodel.metainfo.annotations import ELNAnnotation
 from nomad.datamodel.metainfo.basesections import Entity
@@ -27,9 +28,9 @@ configuration = config.get_plugin_entry_point(
 )
 
 
-class RawFileTIFF(EntryData):
+class RawFile(EntryData):
     """
-    Section for an IFM Overview image file.
+    Section which contains any raw data file.
     """
 
     processed_archive = Quantity(
@@ -40,9 +41,53 @@ class RawFileTIFF(EntryData):
     )
 
 
+class EBICParser(MatchingParser):
+    """
+    Parser for matching EBIC files.
+    """
+
+    def parse(
+        self, mainfile: str, archive: EntryArchive, logger=None, child_archives=None
+    ) -> None:
+        if logger:
+            logger.info('EBICParser.parse executed')
+        else:
+            print('EBICParser.parse executed')
+
+        # case decision based on file extension
+        # .volumes/fs/staging/Tp/TpW_A6wmQbuia_oVdwLqng/raw/20231115_A1_2m.tiff
+        mainfile_split = os.path.basename(mainfile).split('.')
+        mainfile_name, mainfile_ext = mainfile_split[0], mainfile_split[-1]
+
+        if mainfile_ext in ['tif', 'tiff']:
+            # data_file = mainfile_name
+            # entry = UIBKSample.m_from_dict(UIBKSample.m_def.a_template)
+            entry = UIBKSample()
+            # entry.ifm_measurement = IFMResult()
+            # entry.ifm_measurement.data_file = file_name
+            # file_name = f'{"".join(file_name.split(".")[:-1])}.archive.json'
+            # archive.data = RawFileTIFF(
+            #     measurement=create_archive(entry, archive, file_name)
+            # )
+            archive.metadata.entry_name = f'{mainfile_name} data file'
+
+            # create archive and reference the raw data file to it
+            filename = f'{mainfile_name}.archive.json'
+            entry_id = get_entry_id_from_file_name(filename, archive)
+            archive.data = RawFile(
+                processed_archive=get_reference(archive.metadata.upload_id, entry_id)
+            )
+            create_archive(entry, archive, filename)
+
+        elif logger:
+            logger.warn(f'File extension {mainfile_ext} not supported')
+        else:
+            print(f'File extension {mainfile_ext} not supported')
+
+
 class IFMParser(MatchingParser):
     """
-    Parser for matching IFM files and creating instances of IFM.
+    Parser for matching IFM files.
     """
 
     def parse(
@@ -62,7 +107,7 @@ class IFMParser(MatchingParser):
         mainfile_split = os.path.basename(mainfile).split('.')
         mainfile_name, mainfile_ext = mainfile_split[0], mainfile_split[-1]
 
-        if mainfile_ext == 'tiff':
+        if mainfile_ext in ['tif', 'tiff']:
             # data_file = mainfile_name
             # entry = UIBKSample.m_from_dict(UIBKSample.m_def.a_template)
             entry = UIBKSample()
@@ -77,12 +122,12 @@ class IFMParser(MatchingParser):
             # create archive and reference the raw data file to it
             filename = f'{mainfile_name}.archive.json'
             entry_id = get_entry_id_from_file_name(filename, archive)
-            archive.data = RawFileTIFF(
+            archive.data = RawFile(
                 processed_archive=get_reference(archive.metadata.upload_id, entry_id)
             )
             create_archive(entry, archive, filename)
 
         elif logger:
-            logger.info(f'File extension {mainfile_ext} not supported')
+            logger.warn(f'File extension {mainfile_ext} not supported')
         else:
             print(f'File extension {mainfile_ext} not supported')

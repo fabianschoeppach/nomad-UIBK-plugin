@@ -37,7 +37,26 @@ xrfparser = XRFParserEntryPoint(
     mainfile_content_re='PositionType\s+Application\s+Sample\s+name\s+Date\s+\n[A-Z0-9-]+\s+Quant\s+analysis',
 )
 
-# Microcell parsers
+# Microcell parser entry points
+
+
+class EBICParserEntryPoint(ParserEntryPoint):
+    """
+    EBIC Parser plugin entry point.
+    """
+
+    def load(self):
+        # lazy import to avoid circular dependencies
+        from nomad_uibk_plugin.parsers.microcellparsers import EBICParser
+
+        return EBICParser(**self.dict())
+
+
+ebicparser = EBICParserEntryPoint(
+    name='EBICParser',
+    description='Parser for EBIC tiff files.',
+    mainfile_name_re='.*\.tif',
+)
 
 
 class IFMParserEntryPoint(ParserEntryPoint):
