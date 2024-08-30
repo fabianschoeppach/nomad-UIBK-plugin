@@ -69,7 +69,11 @@ class EBICParser(MatchingParser):
     """
 
     def parse(
-        self, mainfile: str, archive: EntryArchive, logger=None, child_archives=None
+        self,
+        mainfile: str,
+        archive: EntryArchive,
+        logger: 'BoundLogger',
+        child_archives: dict[str, 'EntryArchive'] = None,
     ) -> None:
         if logger:
             logger.info('EBICParser.parse executed')
@@ -80,11 +84,11 @@ class EBICParser(MatchingParser):
         # .volumes/fs/staging/Tp/TpW_A6wmQbuia_oVdwLqng/raw/20231115_A1_2m.tiff
         mainfile_split = os.path.basename(mainfile).split('.')
         mainfile_name, mainfile_ext = mainfile_split[0], mainfile_split[-1]
-        details = parse_filename(mainfile_name)
+        # details = parse_filename(mainfile_name)
 
         # case decision based on file extension
         if mainfile_ext in ['tif', 'tiff']:
-            entry = UIBKSample(sample_id=details['sample_id'])
+            entry = UIBKSample()
             archive.metadata.entry_name = f'{mainfile_name} data file'
 
             # create archive and reference the raw data file to it
