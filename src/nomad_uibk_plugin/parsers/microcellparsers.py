@@ -16,7 +16,9 @@ from nomad_measurements.utils import (
     get_reference,
 )
 
-from nomad_uibk_plugin.schema_packages.microcellschema import *
+from nomad_uibk_plugin.schema_packages.microcellschema import (
+    UIBKSample,
+)
 
 if TYPE_CHECKING:
     from nomad.datamodel.datamodel import EntryArchive
@@ -36,7 +38,7 @@ def parse_filename(file_name: str) -> dict:
     file_name_particles = file_name.split('_')
     for particle in file_name_particles:
         if '-' in particle:
-            if len(particle.split('-')) == 2:
+            if len(particle.split('-')) == 2:  # noqa: PLR2004
                 microcell_coordinates = tuple(map(int, particle.split('-')))
 
     sample_id = name = file_name_particles[0]
