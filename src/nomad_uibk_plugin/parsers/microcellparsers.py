@@ -28,6 +28,26 @@ configuration = config.get_plugin_entry_point(
 )
 
 
+def parse_filename(file_name: str) -> dict:
+    """ """
+
+    microcell_coordinates = (0, 0)
+
+    file_name_particles = file_name.split('_')
+    for particle in file_name_particles:
+        if '-' in particle:
+            if len(particle.split('-')) == 2:
+                microcell_coordinates = tuple(map(int, particle.split('-')))
+
+    sample_id = name = file_name_particles[0]
+
+    return {
+        'name': name,
+        'sample_id': sample_id,
+        'microcell_coordinates': microcell_coordinates,
+    }
+
+
 class RawFile(EntryData):
     """
     Section which contains any raw data file.
@@ -54,21 +74,15 @@ class EBICParser(MatchingParser):
         else:
             print('EBICParser.parse executed')
 
-        # case decision based on file extension
+        # handle file name
         # .volumes/fs/staging/Tp/TpW_A6wmQbuia_oVdwLqng/raw/20231115_A1_2m.tiff
         mainfile_split = os.path.basename(mainfile).split('.')
         mainfile_name, mainfile_ext = mainfile_split[0], mainfile_split[-1]
+        details = parse_filename(mainfile_name)
 
+        # case decision based on file extension
         if mainfile_ext in ['tif', 'tiff']:
-            # data_file = mainfile_name
-            # entry = UIBKSample.m_from_dict(UIBKSample.m_def.a_template)
-            entry = UIBKSample()
-            # entry.ifm_measurement = IFMResult()
-            # entry.ifm_measurement.data_file = file_name
-            # file_name = f'{"".join(file_name.split(".")[:-1])}.archive.json'
-            # archive.data = RawFileTIFF(
-            #     measurement=create_archive(entry, archive, file_name)
-            # )
+            entry = UIBKSample(sample_id=details['sample_id'])
             archive.metadata.entry_name = f'{mainfile_name} data file'
 
             # create archive and reference the raw data file to it
