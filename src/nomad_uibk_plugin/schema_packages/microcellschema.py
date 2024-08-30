@@ -23,8 +23,7 @@ from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
     ELNComponentEnum,
 )
-from nomad.datamodel.metainfo.basesections import Measurement
-from nomad.datamodel.metainfo.measurements import Sample
+from nomad.datamodel.metainfo.basesections import Entity, Measurement
 from nomad.datamodel.metainfo.plot import PlotlyFigure, PlotSection
 from nomad.metainfo import Quantity, SchemaPackage, Section, SubSection
 
@@ -89,7 +88,7 @@ class IFMResult(ArchiveSection):
     )
 
 
-class MicroCell(Sample):
+class MicroCell(Entity):
     """
     Represents a microcell on the sample.
     """
@@ -110,7 +109,7 @@ class MicroCell(Sample):
     #     super().normalize()
 
 
-class UIBKSample(Sample, EntryData, PlotSection):
+class UIBKSample(Entity, EntryData, PlotSection):
     """
     Represents a sample.
     """
