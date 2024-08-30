@@ -138,10 +138,13 @@ class UIBKSample(Sample, EntryData, PlotSection):
     ifm_measurement = SubSection(section_def=IFMResult)
 
     def get_microcell_positions(self):
-        list_of_positions = [microcell.position for microcell in self.microcells]
-        x_values = [position[0] for position in list_of_positions]
-        y_values = [position[1] for position in list_of_positions]
-        return x_values, y_values
+        if self.microcells:
+            list_of_positions = [microcell.position for microcell in self.microcells]
+            x_values = [position[0] for position in list_of_positions]
+            y_values = [position[1] for position in list_of_positions]
+            return x_values, y_values
+        else:
+            return None, None
 
     def normalize(self, archive, logger):
         super().normalize(archive, logger)
@@ -164,9 +167,9 @@ class UIBKSample(Sample, EntryData, PlotSection):
                     )
                 )
             else:
-                logger.error('Unequal number of x and y values in microcell positions')
+                logger.warn('Unequal number of x and y values in microcell positions')
         else:
-            logger.error('No microcell positions found')
+            logger.warn('No microcell positions found')
 
 
 m_package.__init_metainfo__()
