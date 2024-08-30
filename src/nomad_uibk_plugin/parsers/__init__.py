@@ -55,7 +55,8 @@ class EBICParserEntryPoint(ParserEntryPoint):
 ebicparser = EBICParserEntryPoint(
     name='EBICParser',
     description='Parser for EBIC tiff files.',
-    mainfile_name_re='.*\.tif',
+    mainfile_name_re='.*\.(tif|tiff)',
+    mainfile_content_re='pointelectronic\.com',
 )
 
 
