@@ -42,9 +42,8 @@ from nomad.datamodel.metainfo.basesections import (
     Measurement,
 )
 from nomad.metainfo import Quantity, SchemaPackage, Section
-from nomad_measurements import (
-    NOMADMeasurementsCategory,
-)
+
+from nomad_uibk_plugin.schema_packages import UIBKCategory
 
 if TYPE_CHECKING:
     pass
@@ -70,7 +69,7 @@ class SEM(Measurement, EntryData):
     """
 
     m_def = Section(
-        categories=[NOMADMeasurementsCategory],
+        categories=[UIBKCategory],
         label='Scanning Electron Microscopy (SEM)',
         a_eln=ELNAnnotation(
             lane_width='600px',
