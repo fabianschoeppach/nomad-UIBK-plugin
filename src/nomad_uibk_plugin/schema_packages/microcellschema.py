@@ -16,19 +16,30 @@
 # limitations under the License.
 #
 
-import plotly.express as px
+from typing import TYPE_CHECKING
+
 from nomad.config import config
 from nomad.datamodel.data import ArchiveSection, EntryData
 from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
     ELNComponentEnum,
 )
-from nomad.datamodel.metainfo.basesections import Entity, Measurement
-from nomad.datamodel.metainfo.plot import PlotlyFigure, PlotSection
+from nomad.datamodel.metainfo.basesections import (
+    # Collection,
+    CompositeSystem,
+    CompositeSystemReference,
+    # Entity,
+    Measurement,
+)
+from nomad.datamodel.metainfo.plot import PlotSection
 from nomad.metainfo import Quantity, SchemaPackage, Section, SubSection
 
 from nomad_uibk_plugin.schema_packages import UIBKCategory
 from nomad_uibk_plugin.schema_packages.XRFschema import XRFResult
+
+if TYPE_CHECKING:
+    from nomad.datamodel.datamodel import EntryArchive
+    from structlog.stdlib import BoundLogger
 
 configuration = config.get_plugin_entry_point(
     'nomad_uibk_plugin.schema_packages:microcellschema',
@@ -88,48 +99,20 @@ class IFMResult(ArchiveSection):
     )
 
 
-class MicroCell(Entity):
-    """
-    Represents a microcell on the sample.
-    """
-
-    position = Quantity(
-        type=float,
-        shape=[2],
-        description='Position of the microcell on the sample',
-        a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity),
-    )
-
-    # Measurements on microcell level
-    ebic_measurement = SubSection(section_def=EBICResult)
-    sem_measurement = SubSection(section_def=SEMResult)
-    iv_measurement = SubSection(section_def=IVResult)
-
-    # def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger'):
-    #     super().normalize()
-
-
-class UIBKSample(Entity, EntryData, PlotSection):
+class UIBKSample(CompositeSystem, EntryData, PlotSection):
     """
     Represents a sample.
     """
 
     m_def = Section(
         categories=[UIBKCategory],
-        label='MicroCell Sample',
+        label='Sample',
         a_eln=ELNAnnotation(
             lane_width='600px',
         ),
         a_template=dict(
             measurement_identifiers=dict(),
         ),
-    )
-
-    # MicroCells
-    microcells = SubSection(
-        section_def=MicroCell,
-        description='List of MicroCells on the sample',
-        repeats=True,
     )
 
     # Measurements on whole sample
@@ -148,27 +131,67 @@ class UIBKSample(Entity, EntryData, PlotSection):
     def normalize(self, archive, logger):
         super().normalize(archive, logger)
 
-        x_values, y_values = self.get_microcell_positions()
-        if x_values and y_values:
-            if len(x_values) == len(y_values):
-                figure = px.scatter(x=x_values, y=y_values)
-                figure.update_layout(
-                    title='MicroCell Overview',
-                    xaxis_title='X',
-                    yaxis_title='Y',
-                    showlegend=False,
-                )
+        # x_values, y_values = self.get_microcell_positions()
+        # if x_values and y_values:
+        #     if len(x_values) == len(y_values):
+        #         figure = px.scatter(x=x_values, y=y_values)
+        #         figure.update_layout(
+        #             title='MicroCell Overview',
+        #             xaxis_title='X',
+        #             yaxis_title='Y',
+        #             showlegend=False,
+        #         )
 
-                self.figures = []
-                self.figures.append(
-                    PlotlyFigure(
-                        label='MicroCell Overview', figure=figure.to_plotly_json()
-                    )
-                )
-            else:
-                logger.warn('Unequal number of x and y values in microcell positions')
-        else:
-            logger.warn('No microcell positions found')
+        #         self.figures = []
+        #         self.figures.append(
+        #             PlotlyFigure(
+        #                 label='MicroCell Overview', figure=figure.to_plotly_json()
+        #             )
+        #         )
+        #     else:
+        #         logger.warn('Unequal number of x and y values in microcell positions')
+        # else:
+        #     logger.warn('No microcell positions found')
+
+
+class UIBKSampleReference(CompositeSystemReference):
+    """
+    A section containing a reference to a sample.
+    """
+
+    m_def = Section(label_quantity='sample_id')
+    reference = Quantity(
+        type=UIBKSample,
+        description='Reference to the sample',
+        a_eln=ELNAnnotation(component='ReferenceEditQuantity', label='Sample'),
+    )
+
+
+class MicroCell(CompositeSystem, EntryData):
+    """
+    Represents a microcell on the sample.
+    """
+
+    m_def = Section(categories=[UIBKCategory], label='MicroCell')
+
+    position = Quantity(
+        type=float,
+        shape=[2],
+        description='Position of the microcell on the sample',
+        a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity),
+    )
+
+    sample = SubSection(
+        section_def=UIBKSampleReference, description='Reference to the sample'
+    )
+
+    # Measurements on microcell level
+    ebic_measurement = SubSection(section_def=EBICResult)
+    sem_measurement = SubSection(section_def=SEMResult)
+    iv_measurement = SubSection(section_def=IVResult)
+
+    def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger'):
+        super().normalize()
 
 
 m_package.__init_metainfo__()

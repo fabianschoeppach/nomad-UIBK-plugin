@@ -33,7 +33,7 @@ configuration = config.get_plugin_entry_point(
 def parse_filename(file_name: str) -> dict:
     """ """
 
-    microcell_coordinates = (0, 0)
+    microcell_coordinates = (0, 0)  # (0,0) or (None, None)?
 
     file_name_particles = file_name.split('_')
     for particle in file_name_particles:
@@ -81,7 +81,6 @@ class EBICParser(MatchingParser):
             print('EBICParser.parse executed')
 
         # handle file name
-        # .volumes/fs/staging/Tp/TpW_A6wmQbuia_oVdwLqng/raw/20231115_A1_2m.tiff
         mainfile_split = os.path.basename(mainfile).split('.')
         mainfile_name, mainfile_ext = mainfile_split[0], mainfile_split[-1]
         # details = parse_filename(mainfile_name)
