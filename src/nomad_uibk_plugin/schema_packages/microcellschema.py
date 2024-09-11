@@ -18,6 +18,7 @@
 
 from typing import TYPE_CHECKING
 
+import plotly.graph_objects as go
 from nomad.config import config
 from nomad.datamodel.data import ArchiveSection, EntryData
 from nomad.datamodel.metainfo.annotations import (
@@ -31,7 +32,7 @@ from nomad.datamodel.metainfo.basesections import (
     # Entity,
     Measurement,
 )
-from nomad.datamodel.metainfo.plot import PlotSection
+from nomad.datamodel.metainfo.plot import PlotlyFigure, PlotSection
 from nomad.metainfo import Quantity, SchemaPackage, Section, SubSection
 
 from nomad_uibk_plugin.schema_packages import UIBKCategory
@@ -119,17 +120,79 @@ class UIBKSample(CompositeSystem, EntryData, PlotSection):
     xrf_measurement = SubSection(section_def=XRFResult)
     ifm_measurement = SubSection(section_def=IFMResult)
 
-    def get_microcell_positions(self):
-        if self.microcells:
-            list_of_positions = [microcell.position for microcell in self.microcells]
-            x_values = [position[0] for position in list_of_positions]
-            y_values = [position[1] for position in list_of_positions]
-            return x_values, y_values
-        else:
-            return None, None
+    # def get_microcell_positions(self):
+    #     if self.microcells:
+    #         list_of_positions = [microcell.position for microcell in self.microcells]
+    #         x_values = [position[0] for position in list_of_positions]
+    #         y_values = [position[1] for position in list_of_positions]
+    #         return x_values, y_values
+    #     else:
+    #         return None, None
+
+    def plot(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
+        from nomad.search import MetadataPagination, search
+
+        query = {
+            'section_defs.definition_qualified_name:all': [
+                'nomad_uibk_plugin.schema_packages.microcellschema.MicroCell'
+            ],
+            'entry_references.target_entry_id:all': [archive.metadata.entry_id],
+        }
+        search_result = search(
+            owner='all',
+            query=query,
+            pagination=MetadataPagination(page_size=1),
+            user_id=archive.metadata.main_author.user_id,
+        )
+        references = []
+        x_values = []
+        y_values = []
+        if search_result.pagination.total > 0:
+            for result in search_result.data:
+                entry_id = result['entry_id']
+                upload_id = result['upload_id']
+                reference = f'../../../{upload_id}/entry/id/{entry_id}'
+                x, y = None, None
+                for quantity in result['search_quantities']:
+                    if quantity['path_archive'] == 'data.position.x':
+                        x = quantity['float_value']
+                    elif quantity['path_archive'] == 'data.position.y':
+                        y = quantity['float_value']
+                references.append(reference)
+                x_values.append(x)
+                y_values.append(y)
+            logger.info(f'Found {len(references)} microcells')
+
+        # Plotting the microcell positions
+        fig = go.Figure(
+            data=go.Scatter(
+                x=x_values,
+                y=y_values,
+                mode='markers',
+                marker=dict(color='#2A4CDF'),
+                customdata=references,
+                hovertemplate='<a href="%{customdata}">Link</a><extra></extra>',
+            )
+        )
+        fig.update_layout(
+            title='Sample Overview',
+            template='plotly_white',
+            hovermode='closest',
+            dragmode='zoom',
+        )
+        plot_json = fig.to_plotly_json()
+        plot_json['config'] = dict(scrollZoom=False)
+        self.figures.append(
+            PlotlyFigure(
+                label='Sample Overview',
+                figure=plot_json,
+            )
+        )
 
     def normalize(self, archive, logger):
         super().normalize(archive, logger)
+        self.figures = []
+        self.plot(archive, logger)
 
         # x_values, y_values = self.get_microcell_positions()
         # if x_values and y_values:
@@ -167,6 +230,29 @@ class UIBKSampleReference(CompositeSystemReference):
     )
 
 
+class MicroCellPosition(ArchiveSection):
+    """
+    Represents the position of a microcell on the sample.
+    For now its a unitless quantity starting at the top left of the sample.
+    """
+
+    m_def = Section()
+
+    x = Quantity(
+        type=float,
+        description='X position of the microcell on the sample',
+        a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity),
+    )
+    y = Quantity(
+        type=float,
+        description='Y position of the microcell on the sample',
+        a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity),
+    )
+
+    def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger'):
+        super().normalize(archive, logger)
+
+
 class MicroCell(CompositeSystem, EntryData):
     """
     Represents a microcell on the sample.
@@ -174,11 +260,9 @@ class MicroCell(CompositeSystem, EntryData):
 
     m_def = Section(categories=[UIBKCategory], label='MicroCell')
 
-    position = Quantity(
-        type=float,
-        shape=[2],
-        description='Position of the microcell on the sample',
-        a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity),
+    position = SubSection(
+        section_def=MicroCellPosition,
+        description='Position (x,y) of the microcell on the sample',
     )
 
     sample = SubSection(
@@ -191,7 +275,7 @@ class MicroCell(CompositeSystem, EntryData):
     iv_measurement = SubSection(section_def=IVResult)
 
     def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger'):
-        super().normalize()
+        super().normalize(archive, logger)
 
 
 m_package.__init_metainfo__()
