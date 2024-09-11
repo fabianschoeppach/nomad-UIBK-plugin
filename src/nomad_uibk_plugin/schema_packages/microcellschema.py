@@ -138,16 +138,25 @@ class UIBKSample(CompositeSystem, EntryData, PlotSection):
             ],
             'entry_references.target_entry_id:all': [archive.metadata.entry_id],
         }
-        search_result = search(
-            owner='all',
-            query=query,
-            pagination=MetadataPagination(page_size=1),
-            user_id=archive.metadata.main_author.user_id,
-        )
+
+        page_after_value = None
         references = []
         x_values = []
         y_values = []
-        if search_result.pagination.total > 0:
+
+        # Search for all microcells in the entry
+        while True:
+            # Query a single page of microcells
+            search_result = search(
+                owner='all',
+                query=query,
+                pagination=MetadataPagination(
+                    page_size=1, page_after_value=page_after_value
+                ),
+                user_id=archive.metadata.main_author.user_id,
+            )
+
+            # Process search results
             for result in search_result.data:
                 entry_id = result['entry_id']
                 upload_id = result['upload_id']
@@ -161,7 +170,13 @@ class UIBKSample(CompositeSystem, EntryData, PlotSection):
                 references.append(reference)
                 x_values.append(x)
                 y_values.append(y)
-            logger.info(f'Found {len(references)} microcells')
+                # logger.info(f'Found {len(references)} microcells')
+
+            # Check if there are more pages
+            if search_result.pagination.next_page_after_value:
+                page_after_value = search_result.pagination.next_page_after_value
+            else:
+                break
 
         # Plotting the microcell positions
         fig = go.Figure(
