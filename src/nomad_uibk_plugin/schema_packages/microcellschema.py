@@ -120,15 +120,6 @@ class UIBKSample(CompositeSystem, EntryData, PlotSection):
     xrf_measurement = SubSection(section_def=XRFResult)
     ifm_measurement = SubSection(section_def=IFMResult)
 
-    # def get_microcell_positions(self):
-    #     if self.microcells:
-    #         list_of_positions = [microcell.position for microcell in self.microcells]
-    #         x_values = [position[0] for position in list_of_positions]
-    #         y_values = [position[1] for position in list_of_positions]
-    #         return x_values, y_values
-    #     else:
-    #         return None, None
-
     def plot(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
         from nomad.search import MetadataPagination, search
 
@@ -193,7 +184,7 @@ class UIBKSample(CompositeSystem, EntryData, PlotSection):
             title='Sample Overview',
             template='plotly_white',
             hovermode='closest',
-            dragmode='zoom',
+            dragmode=False,
         )
         plot_json = fig.to_plotly_json()
         plot_json['config'] = dict(scrollZoom=False)
@@ -208,28 +199,6 @@ class UIBKSample(CompositeSystem, EntryData, PlotSection):
         super().normalize(archive, logger)
         self.figures = []
         self.plot(archive, logger)
-
-        # x_values, y_values = self.get_microcell_positions()
-        # if x_values and y_values:
-        #     if len(x_values) == len(y_values):
-        #         figure = px.scatter(x=x_values, y=y_values)
-        #         figure.update_layout(
-        #             title='MicroCell Overview',
-        #             xaxis_title='X',
-        #             yaxis_title='Y',
-        #             showlegend=False,
-        #         )
-
-        #         self.figures = []
-        #         self.figures.append(
-        #             PlotlyFigure(
-        #                 label='MicroCell Overview', figure=figure.to_plotly_json()
-        #             )
-        #         )
-        #     else:
-        #         logger.warn('Unequal number of x and y values in microcell positions')
-        # else:
-        #     logger.warn('No microcell positions found')
 
 
 class UIBKSampleReference(CompositeSystemReference):
