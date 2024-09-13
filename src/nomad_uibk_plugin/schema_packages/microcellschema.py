@@ -120,7 +120,15 @@ class UIBKSample(CompositeSystem, EntryData, PlotSection):
     xrf_measurement = SubSection(section_def=XRFResult)
     ifm_measurement = SubSection(section_def=IFMResult)
 
-    def plot(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
+    def list_microcell_positions(self, archive: 'EntryArchive', logger: 'BoundLogger'):
+        """
+        List the positions of all microcells in the sample.
+
+        Returns:
+            x_values: list of x positions
+            y_values: list of y positions
+            references: list of references to the microcells
+        """
         from nomad.search import MetadataPagination, search
 
         query = {
@@ -168,6 +176,15 @@ class UIBKSample(CompositeSystem, EntryData, PlotSection):
                 page_after_value = search_result.pagination.next_page_after_value
             else:
                 break
+        return x_values, y_values, references
+
+    def plot(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
+        """
+        Plot the sample overview.
+        """
+
+        # Get the positions of all microcells
+        x_values, y_values, references = self.list_microcell_positions(archive, logger)
 
         # Plotting the microcell positions
         fig = go.Figure(
@@ -175,19 +192,37 @@ class UIBKSample(CompositeSystem, EntryData, PlotSection):
                 x=x_values,
                 y=y_values,
                 mode='markers',
-                marker=dict(color='#2A4CDF'),
+                marker=dict(color='#2A4CDF', size=10),
                 customdata=references,
-                hovertemplate='<a href="%{customdata}">Link</a><extra></extra>',
+                # hovertemplate='<a href="%{customdata}">Link</a><extra></extra>',
             )
         )
+        # Add annotations with reference links
+        annotations = []
+        for i, (x, y, url) in enumerate(zip(x_values, y_values, references)):
+            annotations.append(
+                dict(
+                    x=x,
+                    y=y,
+                    text=f'<a href="{url}">MicroCell {int(x)}-{int(y)}</a>',
+                    showarrow=True,
+                    arrowhead=2,
+                    ax=0,
+                    ay=-20,
+                )
+            )
         fig.update_layout(
             title='Sample Overview',
             template='plotly_white',
-            hovermode='closest',
+            # hovermode='closest',
             dragmode=False,
+            annotations=annotations,
+            # clickmode='event+select',
         )
         plot_json = fig.to_plotly_json()
-        plot_json['config'] = dict(scrollZoom=False)
+        plot_json['config'] = dict(
+            scrollZoom=False,
+        )
         self.figures.append(
             PlotlyFigure(
                 label='Sample Overview',
