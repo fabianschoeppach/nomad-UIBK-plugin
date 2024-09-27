@@ -27,7 +27,8 @@ maintainers = [
 license = { file = "LICENSE" }
 dependencies = [
     "nomad-lab>=1.2.2dev578",
-    "nomad-measurements>=0.0.05"
+    "nomad-measurements>=0.0.05",
+    "nomad-material-processing>=0.0.10"
     ]
 
 [project.urls]
