@@ -27,7 +27,8 @@ maintainers = [
 license = { file = "LICENSE" }
 dependencies = [
     "nomad-lab>=1.2.2dev578",
-    "nomad-measurements>=0.0.05"
+    "nomad-measurements>=0.0.05",
+    "nomad-material-processing>=0.0.10"
     ]
 
 [project.urls]
@@ -115,3 +116,6 @@ myparser = "nomad_uibk_plugin.parsers:myparser"
 mypackage = "nomad_uibk_plugin.schema_packages:mypackage"
 xrfschema = "nomad_uibk_plugin.schema_packages:xrfschema"
 xrfparser = "nomad_uibk_plugin.parsers:xrfparser"
+microcellschema = "nomad_uibk_plugin.schema_packages:microcellschema"
+ifmparser = "nomad_uibk_plugin.parsers:ifmparser"
+ebicparser = "nomad_uibk_plugin.parsers:ebicparser"
