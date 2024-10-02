@@ -57,12 +57,9 @@ from nomad.datamodel.results import (
     StructuralProperties,
 )
 from nomad.metainfo import Datetime, Quantity, SchemaPackage, Section, SubSection
-from nomad_measurements import (
-    NOMADMeasurementsCategory,
-)
 from nomad_measurements.utils import merge_sections
 
-from nomad_uibk_plugin.schema_packages import XRFreader
+from nomad_uibk_plugin.schema_packages import UIBKCategory, XRFreader
 
 if TYPE_CHECKING:
     from structlog.stdlib import BoundLogger
@@ -249,7 +246,7 @@ class ELNXRayFluorescence(XRayFluorescence, EntryData):
     """
 
     m_def = Section(
-        categories=[NOMADMeasurementsCategory],
+        categories=[UIBKCategory],
         label='X-Ray Fluorescence (XRF)',
         a_eln=ELNAnnotation(
             lane_width='600px',
