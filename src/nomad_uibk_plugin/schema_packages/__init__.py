@@ -1,6 +1,15 @@
 from nomad.config.models.plugins import SchemaPackageEntryPoint
+from nomad.datamodel.data import EntryDataCategory
+from nomad.metainfo.metainfo import Category
 from pydantic import Field
 
+
+class UIBKCategory(EntryDataCategory):
+    """
+    A category for all measurements defined in the UIBK nomad plugin.
+    """
+
+    m_def = Category(label='UIBK', categories=[EntryDataCategory])
 
 class MySchemaPackageEntryPoint(SchemaPackageEntryPoint):
     parameter: int = Field(0, description='Custom configuration parameter')
