@@ -37,3 +37,15 @@ xrfschema = XRFSchemaPackageEntryPoint(
     name='XRFSchema',
     description='XRF Schema package defined using the new plugin mechanism.',
 )
+
+class SputteringSchemaEntryPoint(SchemaPackageEntryPoint):
+
+    def load(self):
+        from nomad_uibk_plugin.schema_packages.sputtering import m_package
+
+        return m_package
+    
+sputtering = SputteringSchemaEntryPoint(
+    name='Sputtering',
+    description='Schema entry point for sputter deposition.',
+)
