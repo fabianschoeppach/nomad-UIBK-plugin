@@ -1,11 +1,10 @@
 from nomad.datamodel.data import ArchiveSection, EntryData
-from nomad.metainfo import Quantity, Section, SubSection
+from nomad.metainfo import Section, SubSection  #Quantity
 from nomad_material_processing.vapor_deposition.pvd.general import PVDSource
 from nomad_material_processing.vapor_deposition.pvd.sputtering import SputterDeposition
 
 from nomad_uibk_plugin.schema_packages import UIBKCategory
-
-from .sample import Sample
+from nomad_uibk_plugin.schema_packages.sample import UIBKSample
 
 
 class SputterSource(PVDSource, ArchiveSection):
@@ -21,4 +20,4 @@ class UIBKSputterDeposition(SputterDeposition, EntryData):
         label = 'Sputter Deposition',
     )
 
-    samples = SubSection(Sample, repeats=True)
+    samples = SubSection(section_def = UIBKSample, repeats=True)
