@@ -4,7 +4,7 @@
 
 # nomad-uibk-plugin
 
-![NOMAD Plugin](docs/assets/nomad_plugin_logo.png)
+<img src="docs/assets/nomad-plugin-logo.png" alt="NOMAD Plugin Logo" width="200">
 
 This software is a plugin for the [NOMAD](https://nomad-lab.eu/nomad-lab/) research data management system.  
 It provides a collection of schemas and parsers tailored to measurement methods around fundamental solar cell research.  
@@ -111,4 +111,4 @@ Distributed under the terms of the [Apache Software License 2.0](LICENSE).
 
 This work is funded by the European Union within the Project SolMates (Project Nr. 101122288).
 
-![EU Funding Logo](docs/assets/eu_funding_logo.png)
+<img src="docs/assets/eu_funding_logo.png" alt="EU Funding Logo" width="300">
