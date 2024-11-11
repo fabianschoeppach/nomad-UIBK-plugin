@@ -109,6 +109,6 @@ Distributed under the terms of the [Apache Software License 2.0](LICENSE).
 
 ## Acknowledgments
 
-This work is funded by the European Union within the Project SolMates (Project Nr. 101122288).
+Funding for this work has been provided by the European Union as part of the SolMates project (Project Nr. 101122288).
 
 <img src="docs/assets/eu_funding_logo.png" alt="EU Funding Logo" width="300">
