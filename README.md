@@ -112,3 +112,4 @@ Distributed under the terms of the [Apache Software License 2.0](LICENSE).
 Funding for this work has been provided by the European Union as part of the SolMates project (Project Nr. 101122288).
 
 <img src="docs/assets/eu_funding_logo.png" alt="EU Funding Logo" width="300">
+<img src="docs/assets/solmates_logo.png" alt="EU Funding Logo" width="300">
