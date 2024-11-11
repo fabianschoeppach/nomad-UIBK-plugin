@@ -1,8 +1,10 @@
-# nomad-uibk-plugin
-
 [![Python Version](https://img.shields.io/badge/python-3.9-blue.svg)](https://python.org)
 ![GitHub Issues](https://img.shields.io/github/issues/fabianschoeppach/nomad-UIBK-plugin)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
+# nomad-uibk-plugin
+
+![NOMAD Plugin](docs/assets/nomad_plugin_logo.png)
 
 This software is a plugin for the [NOMAD](https://nomad-lab.eu/nomad-lab/) research data management system.  
 It provides a collection of schemas and parsers tailored to measurement methods around fundamental solar cell research.  
@@ -104,3 +106,9 @@ mkdocs serve
 ### License
 Distributed under the terms of the [Apache Software License 2.0](LICENSE).
 `nomad-uibk-plugin` is free and open source software.
+
+## Acknowledgments
+
+This work is funded by the European Union within the Project SolMates (Project Nr. 101122288).
+
+![EU Funding Logo](docs/assets/eu_funding_logo.png)
