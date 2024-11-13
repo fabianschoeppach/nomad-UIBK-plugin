@@ -12,9 +12,9 @@ It is intended to run on a self-hosted version of NOMAD called [Oasis](https://n
 
 ## Installation
 
-### For Usage in an NOMAD Distribution Image
+### For Usage in a NOMAD Distribution Image
 
-To use this plugin in an NOMAD distribution image such as [this one](https://github.com/fabianschoeppach/nomad-UIBK-image) simply list it in the `plugin.txt` and generate a new image.
+To use this plugin in an NOMAD distribution image [include it in its pyproject.toml](https://github.com/fabianschoeppach/nomad-UIBK-image?tab=readme-ov-file#adding-a-plugin) and generate a new image.
 
 ### Stand alone installation and/or to customize the plugin
 
