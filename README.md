@@ -1,10 +1,10 @@
+<img src="docs/assets/nomad-plugin-logo.png" alt="NOMAD Plugin Logo" width="200">
+
+# NOMAD UIBK Plugin
+
 [![Python Version](https://img.shields.io/badge/python-3.9-blue.svg)](https://python.org)
 ![GitHub Issues](https://img.shields.io/github/issues/fabianschoeppach/nomad-UIBK-plugin)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-
-# nomad-uibk-plugin
-
-<img src="docs/assets/nomad-plugin-logo.png" alt="NOMAD Plugin Logo" width="200">
 
 This software is a plugin for the [NOMAD](https://nomad-lab.eu/nomad-lab/) research data management system.  
 It provides a collection of schemas and parsers tailored to measurement methods around fundamental solar cell research.  
