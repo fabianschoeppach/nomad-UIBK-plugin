@@ -1,4 +1,6 @@
-# nomad-uibk-plugin
+<img src="docs/assets/nomad-plugin-logo.png" alt="NOMAD Plugin Logo" width="200">
+
+# NOMAD UIBK Plugin
 
 [![Python Version](https://img.shields.io/badge/python-3.9-blue.svg)](https://python.org)
 ![GitHub Issues](https://img.shields.io/github/issues/fabianschoeppach/nomad-UIBK-plugin)
@@ -10,9 +12,9 @@ It is intended to run on a self-hosted version of NOMAD called [Oasis](https://n
 
 ## Installation
 
-### For Usage in an NOMAD Distribution Image
+### For Usage in a NOMAD Distribution Image
 
-To use this plugin in an NOMAD distribution image such as [this one](https://github.com/fabianschoeppach/nomad-UIBK-image) simply list it in the `plugin.txt` and generate a new image.
+To use this plugin in an NOMAD distribution image [include it in its pyproject.toml](https://github.com/fabianschoeppach/nomad-UIBK-image?tab=readme-ov-file#adding-a-plugin) and generate a new image.
 
 ### Stand alone installation and/or to customize the plugin
 
@@ -104,3 +106,10 @@ mkdocs serve
 ### License
 Distributed under the terms of the [Apache Software License 2.0](LICENSE).
 `nomad-uibk-plugin` is free and open source software.
+
+## Acknowledgments
+
+Funding for this work has been provided by the European Union as part of the SolMates project (Project Nr. 101122288).
+
+<img src="docs/assets/eu_funding_logo.png" alt="EU Funding Logo" width="300">
+<img src="docs/assets/solmates_logo.png" alt="SolMates Logo" width="300">
