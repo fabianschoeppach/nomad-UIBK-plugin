@@ -49,3 +49,15 @@ sputtering = SputteringSchemaEntryPoint(
     name='Sputtering',
     description='Schema entry point for sputter deposition.',
 )
+
+class MicroCellSchemaPackageEntryPoint(SchemaPackageEntryPoint):
+    def load(self):
+        from nomad_uibk_plugin.schema_packages.microcellschema import m_package
+
+        return m_package
+
+
+microcellschema = MicroCellSchemaPackageEntryPoint(
+    name='MicroCellSchema',
+    description='MicroCell Schema package defined using the new plugin mechanism.',
+)
