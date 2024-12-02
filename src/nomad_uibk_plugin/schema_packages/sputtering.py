@@ -14,17 +14,20 @@ from nomad.metainfo import (
     #  MEnum,
     Datetime,
     Quantity,
+    #  SectionProxy,
+    SchemaPackage,
     #  Package,
     Section,
     # MSection,
     SubSection,
-    #  SectionProxy,
 )
 from nomad_material_processing.vapor_deposition.pvd.general import PVDSource
 from nomad_material_processing.vapor_deposition.pvd.sputtering import SputterDeposition
 
 from nomad_uibk_plugin.schema_packages import UIBKCategory
 from nomad_uibk_plugin.schema_packages.sample import UIBKSample
+
+m_package = SchemaPackage(name='nomad_uibk_sputtering')
 
 
 class Target(PVDSource, EntryData):
@@ -70,7 +73,9 @@ class Target(PVDSource, EntryData):
     )
     internal_name = Quantity(
         type=str,
-        description='Common name of the target. Usually the (simplified) elements and ID',
+        description=(
+            'Common name of the target. ' 'Usually the (simplified) elements and ID'
+        ),
         a_eln=ELNAnnotation(
             component=ELNComponentEnum.StringEditQuantity,
         ),
@@ -103,7 +108,7 @@ class Target(PVDSource, EntryData):
     composition = Quantity(
         type=ElementalComposition,
         description='Composition of the target as stated by the manufacturer',
-        #a_eln=ELNAnnotation(component=ELNComponentEnum.element),
+        # a_eln=ELNAnnotation(component=ELNComponentEnum.element),
         repeatable=True,
     )
     thickness_total = Quantity(
@@ -316,4 +321,7 @@ class UIBKSputterDeposition(SputterDeposition, EntryData):
 
     target = SubSection(section_def=TargetReference, repeats=True)
 
-    parameter = SubSection()
+    # parameter = SubSection()
+
+
+m_package.__init_metainfo__()
