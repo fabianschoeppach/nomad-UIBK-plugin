@@ -12,6 +12,19 @@ class UIBKCategory(EntryDataCategory):
     m_def = Category(label='UIBK', categories=[EntryDataCategory])
 
 
+class BaseSectionEntryPoint(SchemaPackageEntryPoint):
+    def load(self):
+        from nomad_uibk_plugin.schema_packages.basesections import m_package
+
+        return m_package
+
+
+basesections = BaseSectionEntryPoint(
+    name='Basesections',
+    description='Base sections for the UIBK plugin.',
+)
+
+
 class XRFSchemaPackageEntryPoint(SchemaPackageEntryPoint):
     parameter: int = Field(0, description='Custom configuration parameter')
 

@@ -27,7 +27,7 @@ from nomad_material_processing.vapor_deposition.pvd.sputtering import SputterDep
 from nomad_uibk_plugin.schema_packages import UIBKCategory
 from nomad_uibk_plugin.schema_packages.sample import UIBKSample
 
-m_package = SchemaPackage(name='nomad_uibk_sputtering')
+m_package = SchemaPackage()
 
 
 class Target(PVDSource, EntryData):

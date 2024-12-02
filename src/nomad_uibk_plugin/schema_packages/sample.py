@@ -6,7 +6,8 @@ from nomad.datamodel.data import (
 )
 from nomad.datamodel.metainfo.annotations import ELNAnnotation, ELNComponentEnum
 from nomad.datamodel.metainfo.basesections import (
-    CompositeSystem,  # CompositeSystemReference
+    CompositeSystem,
+    CompositeSystemReference,
 )
 from nomad.datamodel.metainfo.plot import PlotlyFigure, PlotSection
 from nomad.metainfo import Quantity, SchemaPackage, Section, SubSection
@@ -16,7 +17,7 @@ if TYPE_CHECKING:
     from structlog.stdlib import BoundLogger
 
 
-m_package = SchemaPackage(name='nomad_uibk_sample')
+m_package = SchemaPackage()
 
 
 class MicroCell(CompositeSystem):
@@ -131,6 +132,21 @@ class UIBKSample(CompositeSystem, EntryData, PlotSection):
         super().normalize(archive, logger)
         self.figures = []
         self.plot(archive, logger)
+
+
+class UIBKSampleReference(CompositeSystemReference):
+    """
+    Reference section to an UIBK sample.
+    """
+
+    reference = Quantity(
+        type=UIBKSample,
+        description='Reference to an UIBK sample',
+        a_eln=ELNAnnotation(
+            component='ReferenceEditQuantity',
+            label='Link to Sample',
+        ),
+    )
 
 
 m_package.__init_metainfo__()
