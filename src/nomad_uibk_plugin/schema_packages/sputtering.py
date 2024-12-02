@@ -103,7 +103,7 @@ class Target(PVDSource, EntryData):
     composition = Quantity(
         type=ElementalComposition,
         description='Composition of the target as stated by the manufacturer',
-        a_eln=ELNAnnotation(component=ELNComponentEnum.element),
+        #a_eln=ELNAnnotation(component=ELNComponentEnum.element),
         repeatable=True,
     )
     thickness_total = Quantity(
