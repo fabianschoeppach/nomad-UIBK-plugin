@@ -113,8 +113,10 @@ where = ["src"]
 
 [project.entry-points.'nomad.plugin']
 # schema
-xrfschema = "nomad_uibk_plugin.schema_packages:xrfschema"
-sputtering = "nomad_uibk_plugin.schema_packages:sputtering"
+basesections = "nomad_uibk_plugin.schema_packages:basesections"
 sample = "nomad_uibk_plugin.schema_packages:sample"
+sputtering = "nomad_uibk_plugin.schema_packages:sputtering"
+xrfschema = "nomad_uibk_plugin.schema_packages:xrfschema"
 # parser
+sputterparser = "nomad_uibk_plugin.parsers:sputterparser"
 xrfparser = "nomad_uibk_plugin.parsers:xrfparser"

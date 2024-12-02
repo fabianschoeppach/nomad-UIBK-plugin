@@ -68,7 +68,7 @@ configuration = config.get_plugin_entry_point(
     'nomad_uibk_plugin.schema_packages:xrfschema'
 )
 
-m_package = SchemaPackage(name='nomad_xrf')
+m_package = SchemaPackage()
 
 
 class XRFElementalComposition(ElementalComposition):
