@@ -12,21 +12,6 @@ class UIBKCategory(EntryDataCategory):
     m_def = Category(label='UIBK', categories=[EntryDataCategory])
 
 
-class MySchemaPackageEntryPoint(SchemaPackageEntryPoint):
-    parameter: int = Field(0, description='Custom configuration parameter')
-
-    def load(self):
-        from nomad_uibk_plugin.schema_packages.mypackage import m_package
-
-        return m_package
-
-
-mypackage = MySchemaPackageEntryPoint(
-    name='MyPackage',
-    description='Schema package defined using the new plugin mechanism.',
-)
-
-
 class XRFSchemaPackageEntryPoint(SchemaPackageEntryPoint):
     parameter: int = Field(0, description='Custom configuration parameter')
 
@@ -55,17 +40,17 @@ sputtering = SputteringSchemaEntryPoint(
 )
 
 
-class MicroCellSchemaPackageEntryPoint(SchemaPackageEntryPoint):
-    def load(self):
-        from nomad_uibk_plugin.schema_packages.microcellschema import m_package
+# class MicroCellSchemaPackageEntryPoint(SchemaPackageEntryPoint):
+#     def load(self):
+#         from nomad_uibk_plugin.schema_packages.microcellschema import m_package
 
-        return m_package
+#         return m_package
 
 
-microcellschema = MicroCellSchemaPackageEntryPoint(
-    name='MicroCellSchema',
-    description='MicroCell Schema package defined using the new plugin mechanism.',
-)
+# microcellschema = MicroCellSchemaPackageEntryPoint(
+#     name='MicroCellSchema',
+#     description='MicroCell Schema package defined using the new plugin mechanism.',
+# )
 
 
 class SampleSchemaPackageEntryPoint(SchemaPackageEntryPoint):

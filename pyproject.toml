@@ -112,10 +112,9 @@ package-dir = { "" = "src" }
 where = ["src"]
 
 [project.entry-points.'nomad.plugin']
-myparser = "nomad_uibk_plugin.parsers:myparser"
-mypackage = "nomad_uibk_plugin.schema_packages:mypackage"
-microcellschema = "nomad_uibk_plugin.schema_packages:microcellschema"
+# schema
 xrfschema = "nomad_uibk_plugin.schema_packages:xrfschema"
-xrfparser = "nomad_uibk_plugin.parsers:xrfparser"
 sputtering = "nomad_uibk_plugin.schema_packages:sputtering"
 sample = "nomad_uibk_plugin.schema_packages:sample"
+# parser
+xrfparser = "nomad_uibk_plugin.parsers:xrfparser"

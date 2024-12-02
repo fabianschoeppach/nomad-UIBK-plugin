@@ -9,13 +9,14 @@ from nomad.datamodel.metainfo.basesections import (
     CompositeSystem,  # CompositeSystemReference
 )
 from nomad.datamodel.metainfo.plot import PlotlyFigure, PlotSection
-from nomad.metainfo import Quantity, Section, SubSection
+from nomad.metainfo import Quantity, SchemaPackage, Section, SubSection
 
 if TYPE_CHECKING:
     from nomad.datamodel.datamodel import EntryArchive
     from structlog.stdlib import BoundLogger
 
-from itertools import product
+
+m_package = SchemaPackage(name='nomad_uibk_sample')
 
 
 class MicroCell(CompositeSystem):
@@ -130,3 +131,6 @@ class UIBKSample(CompositeSystem, EntryData, PlotSection):
         super().normalize(archive, logger)
         self.figures = []
         self.plot(archive, logger)
+
+
+m_package.__init_metainfo__()
