@@ -20,6 +20,8 @@ from typing import (
     TYPE_CHECKING,
 )
 
+from nomad_uibk_plugin.filereader import XRFreader
+
 if TYPE_CHECKING:
     from nomad.datamodel.datamodel import (
         EntryArchive,
@@ -59,7 +61,7 @@ from nomad.datamodel.results import (
 from nomad.metainfo import Datetime, Quantity, SchemaPackage, Section, SubSection
 from nomad_measurements.utils import merge_sections
 
-from nomad_uibk_plugin.schema_packages import UIBKCategory, XRFreader
+from nomad_uibk_plugin.schema_packages import UIBKCategory
 
 if TYPE_CHECKING:
     from structlog.stdlib import BoundLogger
