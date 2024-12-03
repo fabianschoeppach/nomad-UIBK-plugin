@@ -44,16 +44,17 @@ class SputterParser(MatchingParser):
         child_archives: dict[str, 'EntryArchive'] = None,
     ) -> None:
         logger.info('SputterParser.parse')
-        data_file = mainfile.split('/')[-1]
-        entry = UIBKSputterDeposition.m_from_dict(
-            UIBKSputterDeposition.m_def.a_template
-        )
-        entry.data_file = data_file
-        file_name = f'{"".join(data_file.split(".")[:-1])}.archive.json'
+        filename = mainfile.split('/')[-1]
+        # entry = UIBKSputterDeposition.m_from_dict(
+        #     UIBKSputterDeposition.m_def.a_template
+        # )
+        entry = UIBKSputterDeposition()
+        entry.data_file = filename
+        archive_name = f'{"".join(filename.split(".")[:-1])}.archive.json'
         archive.data = RawFileSputterData(
             measurement=get_reference(
                 archive.metadata.upload_id,
-                get_entry_id_from_file_name(file_name, archive),
+                get_entry_id_from_file_name(archive_name, archive),
             )
         )
-        create_archive(entry, archive, file_name)
+        create_archive(entry, archive, archive_name)

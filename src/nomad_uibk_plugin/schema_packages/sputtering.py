@@ -1,3 +1,5 @@
+from typing import TYPE_CHECKING
+
 from nomad.datamodel.data import ArchiveSection, EntryData
 from nomad.datamodel.metainfo.annotations import ELNAnnotation, ELNComponentEnum
 from nomad.datamodel.metainfo.basesections import (
@@ -26,6 +28,12 @@ from nomad_material_processing.vapor_deposition.pvd.sputtering import SputterDep
 
 from nomad_uibk_plugin.schema_packages import UIBKCategory
 from nomad_uibk_plugin.schema_packages.sample import UIBKSample
+
+if TYPE_CHECKING:
+    from nomad.datamodel.datamodel import EntryArchive
+    from structlog.stdlib import BoundLogger
+
+from nomad_measurements.utils import merge_sections  # create_archive
 
 m_package = SchemaPackage()
 
@@ -68,6 +76,7 @@ class Target(PVDSource, EntryData):
     """
 
     m_def = Section()
+
     internal_id = Quantity(
         type=int,
         description='The lab ID of the target.',
@@ -225,11 +234,13 @@ class Substrate(EntryData):
     -
     """
 
+    m_def = Section()
+
     type = Quantity(
         type=MEnum(['c-Si die', 'glass', 'polyimide']),
         description='Type of substrate material',
         default='',
-        a_eln={'component': 'AutocompleteEditQuasntity'},
+        a_eln={'component': 'AutocompleteEditQuantity'},
     )
     subtype = Quantity(
         type=str,
@@ -251,25 +262,25 @@ class Substrate(EntryData):
         default='',
         a_eln={'component': 'RadioEnumEditQuantity'},
     )
-    m_def = Section()
+
     size_x = Quantity(
         type=float,
         description='Radius or x-dimension of the sample.',
         a_eln={'component': 'NumberEditQuantity', 'defaultDisplayUnit': 'mm'},
-        unit='mmm',
+        unit='meter',
     )
     size_y = Quantity(
         type=float,
         description='Y-dimension of the sample.',
         a_eln={'component': 'NumberEditQuantity', 'defaultDisplayUnit': 'mm'},
-        unit='mmm',
+        unit='meter',
     )
 
     size_z = Quantity(
         type=float,
         description='Height of the sample.',
         a_eln={'component': 'NumberEditQuantity', 'defaultDisplayUnit': 'mm'},
-        unit='mmm',
+        unit='meter',
     )
 
 
@@ -279,13 +290,12 @@ class SubstrateReference(SectionReference):
 
 class Operator(EntryData):
     author = Quantity(
-        # type = ?
+        type=str,  ## < ?
         description='Authors/Operators',
         a_eln=ELNAnnotation(
-            component=ELNComponentEnum.AuthorEditQuantity,
+            component=ELNComponentEnum.StringEditQuantity,  # AuthorEditQuantity?
         ),
     )
-    # or `UserEditQuantity`:?
 
 
 class OperatorReference(SectionReference):
@@ -315,6 +325,8 @@ class PSU(EntryData):
         - Frequency
         - pulse reverse time
     """
+
+    m_def = Section()
 
     internal_id = Quantity(
         type=int,
@@ -385,7 +397,7 @@ class PSU(EntryData):
             component=ELNComponentEnum.BoolEditQuantity,
         ),
     )
-    m_def = Section()
+
     operating_hours = Quantity(
         type=int,
         description='NOMAD ID of the PSU',
@@ -403,7 +415,7 @@ class PSU(EntryData):
         type=MEnum(['W', 'V', 'A']),
         description='',
         default='W',
-        a_eln={'component': 'RadioEnumEditQuantityty'},
+        a_eln={'component': 'RadioEnumEditQuantity'},
     )
     setpoint_value = Quantity(
         type=float,
@@ -551,7 +563,7 @@ class SputterParameters(ArchiveSection):
     - sample rotation speed
     """
 
-    pass
+    test = Quantity(type=str)
 
 
 class UIBKSputterDeposition(SputterDeposition, EntryData):
@@ -560,11 +572,32 @@ class UIBKSputterDeposition(SputterDeposition, EntryData):
         label='Sputter Deposition',
     )
 
+    data_file = Quantity(
+        type=str,
+        description='Path to the data file',
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.FileEditQuantity,
+        ),
+    )
+
     samples = SubSection(section_def=UIBKSample, repeats=True)
 
     target = SubSection(section_def=TargetReference, repeats=True)
 
-    # parameter = SubSection()
+    parameters = SubSection(section_def=SputterParameters)
+
+    def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
+        """Update the data from the data file if it is not already set"""
+
+        from nomad_uibk_plugin.filereader.sputterreader import read_sputter_csv
+
+        # if self.data is None and self.data_file is not None:
+        if self.data_file is not None:
+            with archive.m_context.raw_file(self.data_file) as file:
+                sputter_entry = read_sputter_csv(file, logger)
+                merge_sections(self, sputter_entry, logger)
+
+        super().normalize(archive, logger)
 
 
 m_package.__init_metainfo__()
