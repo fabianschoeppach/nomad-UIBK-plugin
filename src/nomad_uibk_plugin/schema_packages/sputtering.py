@@ -11,12 +11,12 @@ from nomad.datamodel.metainfo.basesections import (
     SectionReference,
 )
 from nomad.metainfo import (
-    #  MEnum,
     Datetime,
+    MEnum,
     Quantity,
-    #  SectionProxy,
+    # SectionProxy,
     SchemaPackage,
-    #  Package,
+    # Package,
     Section,
     # MSection,
     SubSection,
@@ -35,22 +35,23 @@ class Target(PVDSource, EntryData):
     Targets have:
     Static
     - Internal ID
-        - number
-        - name
-    - Manufacturer
-    - Reseller
-    - Manufacturing date (day optional)
-    - Date of arrival (day/month optional)
+        - number s
+        - name s
+    - Manufacturer s
+    - Reseller s
+    - Manufacturing date (day/month optional) s
+    - Date of arrival (day/month optional) s
     - Composition (Multiple elements, doted, with purity, at% or wt%)(Supplyer values)
     - Thickness
-        - Total
-        - Material
-        - Backing plate
+        - Total s
+        - Material s
+        - Backing plate s
     - Diameter
-        - Material
-        - Backing plate
-    - Backing plate (bool)
-    - shape (planar, special)
+        - Material s
+        - Backing plate s
+    - Backing plate (bool) s
+    - shape (planar, special) s
+    - prior use s
 
     Changing
     - Impurity (other target in the same process)
@@ -66,6 +67,7 @@ class Target(PVDSource, EntryData):
     - A chronological list of all processes
     """
 
+    m_def = Section()
     internal_id = Quantity(
         type=int,
         description='The lab ID of the target.',
@@ -102,7 +104,7 @@ class Target(PVDSource, EntryData):
     acceptance_date = Quantity(
         type=Datetime,
         description='Date when target was first added to the database',
-        a_eln=ELNAnnotation(component=ELNComponentEnum.DateTimeEditQuantity),
+        a_eln=ELNAnnotation(component=ELNComponentEnum.DateEditQuantity),
     )
     'TODO: Use proper types and crate a new category for the GUI.'
     composition = Quantity(
@@ -116,38 +118,48 @@ class Target(PVDSource, EntryData):
         description='Thickness of the target includnig material and backing plate.',
         a_eln=ELNAnnotation(
             component=ELNComponentEnum.NumberEditQuantity,
+            defaultDisplayUnit='mm',
+            label='Total thickness',
         ),
-        unit='mm',
+        unit='m',
     )
     thickness_material = Quantity(
         type=float,
         description='Thickness of the target material thickness.',
         a_eln=ELNAnnotation(
             component=ELNComponentEnum.NumberEditQuantity,
+            defaultDisplayUnit='mm',
+            label='Material thickness',
         ),
-        unit='mm',
+        unit='m',
     )
     thickness_backing_plate = Quantity(
         type=float,
         description='Thickness of the target includnig material and backing plate.',
         a_eln=ELNAnnotation(
             component=ELNComponentEnum.NumberEditQuantity,
+            defaultDisplayUnit='mm',
+            label='Backing plate thickness',
         ),
-        unit='mm',
+        unit='m',
     )
     diameter_material = Quantity(
         type=float,
-        description='Thickness of the target material thickness.',
+        description='Diameter of the target material.',
         a_eln=ELNAnnotation(
             component=ELNComponentEnum.NumberEditQuantity,
+            defaultDisplayUnit='mm',
+            label='Material thickness',
         ),
-        unit='mm',
+        unit='m',
     )
     diameter_backing_plate = Quantity(
         type=float,
-        description='Thickness of the target includnig material and backing plate.',
+        description='Diameter of the backing plate.',
         a_eln=ELNAnnotation(
             component=ELNComponentEnum.NumberEditQuantity,
+            defaultDisplayUnit='mm',
+            label='Backing plate diameter',
         ),
         unit='mm',
     )
@@ -158,12 +170,12 @@ class Target(PVDSource, EntryData):
             component=ELNComponentEnum.BoolEditQuantity,
         ),
     )
+    # TODO: How detailed do we want to be here?
     shape = Quantity(
-        type=str,
-        description='Shape of the target surface.',
-        a_eln=ELNAnnotation(
-            component=ELNComponentEnum.StringEditQuantity,
-        ),
+        type=MEnum(['circular', 'rectangular', 'special']),
+        description='Shape of the target.',
+        default='circular',
+        a_eln={'component': 'RadioEnumEditQuantity'},
     )
     prior_use = Quantity(
         type=bool,
@@ -172,16 +184,13 @@ class Target(PVDSource, EntryData):
             component=ELNComponentEnum.BoolEditQuantity,
         ),
     )
+    m_def = Section()
     """
+    # TODO: 
     Impurities
     - Date + Target + Joules (linked via process ID?)
     """
-    """
-    Usage
-    - Sum of energy for the target.
 
-    - pre sputter time (shutter)
-    """
     usage = Quantity(
         type=float,
         description='Total of the energy used of the target',
@@ -197,7 +206,7 @@ class Target(PVDSource, EntryData):
     - EDX
 
     Associations
-    - List of all VP a target was used in
+    - List of all VPs a target was used in
     - A chronological list of all processes
     """
 
@@ -216,21 +225,71 @@ class Substrate(EntryData):
     -
     """
 
-    pass
+    type = Quantity(
+        type=MEnum(['c-Si die', 'glass', 'polyimide']),
+        description='Type of substrate material',
+        default='',
+        a_eln={'component': 'AutocompleteEditQuasntity'},
+    )
+    subtype = Quantity(
+        type=str,
+        description='Subtype of the substrate.',
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.StringEditQuantity,
+        ),
+    )
+    batch = Quantity(
+        type=str,
+        description='Batch ID',
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.StringEditQuantity,
+        ),
+    )
+    mountingType = Quantity(
+        type=MEnum(['retainers', 'double sided tape', 'retainers FlexPecs Narrow']),
+        description='How is the substrate mounted in the chamber?',
+        default='',
+        a_eln={'component': 'RadioEnumEditQuantity'},
+    )
+    m_def = Section()
+    size_x = Quantity(
+        type=float,
+        description='Radius or x-dimension of the sample.',
+        a_eln={'component': 'NumberEditQuantity', 'defaultDisplayUnit': 'mm'},
+        unit='mmm',
+    )
+    size_y = Quantity(
+        type=float,
+        description='Y-dimension of the sample.',
+        a_eln={'component': 'NumberEditQuantity', 'defaultDisplayUnit': 'mm'},
+        unit='mmm',
+    )
+
+    size_z = Quantity(
+        type=float,
+        description='Height of the sample.',
+        a_eln={'component': 'NumberEditQuantity', 'defaultDisplayUnit': 'mm'},
+        unit='mmm',
+    )
+
+
+class SubstrateReference(SectionReference):
+    reference = Quantity(type=Substrate, a_eln=dict(component='ReferenceEditQuantity'))
 
 
 class Operator(EntryData):
-    """
-    - NOMAD internal ID
-    - c-number
-        - student
-        - employee
-    - Name
-    - NOMAD user name (for API upload?)
-    - Token (API upload?)
-    """
+    author = Quantity(
+        # type = ?
+        description='Authors/Operators',
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.AuthorEditQuantity,
+        ),
+    )
+    # or `UserEditQuantity`:?
 
-    pass
+
+class OperatorReference(SectionReference):
+    reference = Quantity(type=Operator, a_eln=dict(component='ReferenceEditQuantity'))
 
 
 class PSU(EntryData):
@@ -238,23 +297,146 @@ class PSU(EntryData):
     static
     - NOMAD internal ID
     - Manufacturer
+    - Reseller
     - Model
     - Serial Number
-    - Operating Hours
-    - Operating Joules
     - prior use
     - [DC only, RF, Pulsed]
+
+    variable
+    - Operating Hours
+    - Operating Joules
 
     time based
     - Setpoint type [W, V, A]
     - Setpoint value
     - RF settings
-    - Pulsed settings
+    - Pulsed settingss
         - Frequency
         - pulse reverse time
     """
 
-    pass
+    internal_id = Quantity(
+        type=int,
+        description='NOMAD ID of the PSU',
+        a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity),
+        a_display={'visible': False},
+    )
+    manufacturer_name = Quantity(
+        type=str,
+        description='Name of manufacturing company.',
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.StringEditQuantity,
+        ),
+    )
+    reseller_name = Quantity(
+        type=str,
+        description='Name of reseller.',
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.StringEditQuantity,
+        ),
+    )
+    model = Quantity(
+        type=str,
+        description='Name of reseller.',
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.StringEditQuantity,
+        ),
+    )
+    serial = Quantity(
+        type=str,
+        description='Name of reseller.',
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.StringEditQuantity,
+        ),
+    )
+    installation_date = Quantity(
+        type=Datetime,
+        description='',
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.DateEditQuantity,
+        ),
+    )
+    DC_capability = Quantity(
+        type=bool,
+        description='',
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.BoolEditQuantity,
+        ),
+    )
+    rf_capability = Quantity(
+        type=bool,
+        description='',
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.BoolEditQuantity,
+        ),
+    )
+    pulsed_capability = Quantity(
+        type=bool,
+        description='',
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.BoolEditQuantity,
+        ),
+    )
+    prior_use = Quantity(
+        type=bool,
+        description='The PSU was in use before being added to NOMAD.',
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.BoolEditQuantity,
+        ),
+    )
+    m_def = Section()
+    operating_hours = Quantity(
+        type=int,
+        description='NOMAD ID of the PSU',
+        a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity),
+        unit='hour',
+    )
+    operating_joules = Quantity(
+        type=int,
+        description='NOMAD ID of the PSU',
+        a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity),
+        unit='joule',
+    )
+    m_def = Section()
+    setpoint_type = Quantity(
+        type=MEnum(['W', 'V', 'A']),
+        description='',
+        default='W',
+        a_eln={'component': 'RadioEnumEditQuantityty'},
+    )
+    setpoint_value = Quantity(
+        type=float,
+        description='',
+    )
+    m_def = Section()
+    # RF settings
+    m_def = Section()
+    # Pulsed settings
+    pulse_frequency = Quantity(
+        type=int,
+        description='',
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.NumberEditQuantity,
+            defaultDisplayUnit='kHz',
+            label='Pulse frequency',
+        ),
+        unit='Hz',
+    )
+    pulse_reverse_time = Quantity(
+        type=int,
+        description='',
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.NumberEditQuantity,
+            defaultDisplayUnit='ms',
+            label='Pulse reverse time',
+        ),
+        unit='s',
+    )
+
+
+class PsuReference(SectionReference):
+    reference = Quantity(type=PSU, a_eln=dict(component='ReferenceEditQuantity'))
 
 
 class PressureGauge(EntryData):
@@ -265,7 +447,68 @@ class PressureGauge(EntryData):
     - pressure
     """
 
-    pass
+    internal_id = Quantity(
+        type=int,
+        description='NOMAD ID of the PSU',
+        a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity),
+        a_display={'visible': False},
+    )
+    internal_name = Quantity(
+        type=str,
+        description='Internal name',
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.StringEditQuantity, label='Internal name'
+        ),
+    )
+    manufacturer_name = Quantity(
+        type=str,
+        description='Name of manufacturing company.',
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.StringEditQuantity,
+        ),
+    )
+    reseller_name = Quantity(
+        type=str,
+        description='Name of reseller.',
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.StringEditQuantity,
+        ),
+    )
+    model = Quantity(
+        type=str,
+        description='Name of reseller.',
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.StringEditQuantity,
+        ),
+    )
+    serial = Quantity(
+        type=str,
+        description='Name of reseller.',
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.StringEditQuantity,
+        ),
+    )
+    installation_date = Quantity(
+        type=Datetime,
+        description='',
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.DateEditQuantity,
+        ),
+    )
+    pressure = Quantity(
+        type=float,
+        description='',
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.NumberEditQuantity,
+            defaultDisplayUnit='mBar',
+            label='Pressure',
+        ),
+        unit='Pa',
+    )
+
+
+class PressureGaugeReference(SectionReference):
+    reference = Quantity(type=PSU, a_eln=dict(component='ReferenceEditQuantity'))
 
 
 class MassFlowController(EntryData):
@@ -294,7 +537,7 @@ class SputterParameters(ArchiveSection):
                 - ID
         - Substrate (->Substrate)
     - Installed targets (multiple)(->Target)
-    - Installed PSUs (multiple)
+    - Installed PSUs (multiple) (-> PSU)
     - sample distance_to_source
     - Comment
     - LN² (bool)
