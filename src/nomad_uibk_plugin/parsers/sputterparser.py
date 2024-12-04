@@ -49,7 +49,7 @@ class SputterParser(MatchingParser):
         #     UIBKSputterDeposition.m_def.a_template
         # )
         entry = UIBKSputterDeposition()
-        entry.data_file = filename
+        entry.log_file = filename
         archive_name = f'{"".join(filename.split(".")[:-1])}.archive.json'
         archive.data = RawFileSputterData(
             measurement=get_reference(

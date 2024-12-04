@@ -23,6 +23,7 @@ from nomad.datamodel.metainfo.basesections import (
     Process,
 )
 from nomad.metainfo import Quantity, SchemaPackage, SubSection
+from nomad_material_processing.vapor_deposition.general import TimeSeries
 
 from nomad_uibk_plugin.schema_packages.sample import UIBKSampleReference
 
@@ -31,6 +32,58 @@ from nomad_uibk_plugin.schema_packages.sample import UIBKSampleReference
 #     from structlog.stdlib import BoundLogger
 
 m_package = SchemaPackage()
+
+
+class Power(TimeSeries):
+    value = Quantity(
+        type=float,
+        unit='watt',
+        shape=['*'],
+    )
+    set_value = Quantity(
+        type=float,
+        unit='watt',
+        shape=['*'],
+    )
+
+
+class Current(TimeSeries):
+    value = Quantity(
+        type=float,
+        unit='ampere',
+        shape=['*'],
+    )
+    set_value = Quantity(
+        type=float,
+        unit='ampere',
+        shape=['*'],
+    )
+
+
+class Voltage(TimeSeries):
+    value = Quantity(
+        type=float,
+        unit='volt',
+        shape=['*'],
+    )
+    set_value = Quantity(
+        type=float,
+        unit='volt',
+        shape=['*'],
+    )
+
+
+class Pressure(TimeSeries):
+    value = Quantity(
+        type=float,
+        unit='pascal',
+        shape=['*'],
+    )
+    set_value = Quantity(
+        type=float,
+        unit='pascal',
+        shape=['*'],
+    )
 
 
 class UIBKProcess(Process):

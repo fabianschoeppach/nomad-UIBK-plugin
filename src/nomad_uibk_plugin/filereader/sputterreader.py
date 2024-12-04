@@ -78,6 +78,5 @@ def read_sputter_csv(
     # TODO: Implement time series parsing
 
     deposition.parameters = SputterParameters(test='HUHU!')
-    deposition.samples = []
 
     return deposition
