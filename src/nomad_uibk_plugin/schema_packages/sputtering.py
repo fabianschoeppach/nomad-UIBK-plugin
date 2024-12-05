@@ -1,18 +1,20 @@
 from typing import TYPE_CHECKING
 
+import numpy as np
 from ase.data import chemical_symbols
 from nomad.datamodel.data import ArchiveSection, EntryData
 from nomad.datamodel.metainfo.annotations import ELNAnnotation, ELNComponentEnum
 from nomad.datamodel.metainfo.basesections import (
-    # Component,
     CompositeSystem,
-    # PureSubstanceSection,
+    ElementalComposition,
+    EntityReference,
     PubChemPureSubstanceSection,
-    # CompositeSystemReference,
-    # ElementalComposition,
-    # InstrumentReference,
     PureSubstanceComponent,
     SectionReference,
+    # Component,
+    # CompositeSystemReference,
+    # InstrumentReference,
+    # PureSubstanceSection,
 )
 from nomad.metainfo import (
     Datetime,
@@ -585,13 +587,11 @@ class SputterParameters(ArchiveSection):
 
 
 class TargetComponent(PureSubstanceComponent):
-    name = Quantity(
-        type=MEnum(chemical_symbols[1:]),
-        description='Name of the element',
-        a_eln=ELNAnnotation(
-            component=ELNComponentEnum.AutocompleteEditQuantity,
-        ),
-    )
+    """
+    A component of a target.
+    Usefull to describe the creation of a target from multiple components
+    each with their own mass or mass fraction,
+    """
 
     pure_substance = SubSection(
         section_def=PubChemPureSubstanceSection,
@@ -623,6 +623,10 @@ class TargetComponent(PureSubstanceComponent):
 
 
 class Target(CompositeSystem, EntryData):
+    """
+    A Target which is used in a sputter deposition process.
+    """
+
     m_def = Section(
         label='Target',
         categories=[UIBKCategory],
@@ -630,52 +634,67 @@ class Target(CompositeSystem, EntryData):
 
     components = SubSection(section_def=TargetComponent, repeats=True)
 
+    total_depositions = Quantity(
+        type=int,
+        description='Number of depositions the target has been used in',
+        default=0,
+    )
     total_dose = Quantity(
         type=float,
-        # unit='joule', ?
+        unit='joule',
         description='Total dose of the target',
         default=0,
-        a_eln=ELNAnnotation(
-            component=ELNComponentEnum.NumberEditQuantity,
-        ),
     )
-    # TODO: Should this be editable?
     cross_contamination = Quantity(
         type=MEnum(chemical_symbols[1:]),
         description=(
-            'Elements that are not part of the target'
-            'but may be present due to cross contamination.'
+            'Elements that are originally not part of the target'
+            'but may be present due to cross contamination from the previous deposition'
         ),
         shape=['*'],
-        a_eln=ELNAnnotation(
-            component=ELNComponentEnum.AutocompleteEditQuantity,
-        ),
+    )
+
+    elemental_composition = SubSection(
+        description="""
+        A list of all the elements and their respective atomic or mass fractions 
+        found in the target.
+        Either filled automatically by populating the components or manually by editing.
+        """,
+        section_def=ElementalComposition,
+        repeats=True,
     )
 
     def normalize(self, archive, logger: 'BoundLogger') -> None:
-        self.elemental_composition = []
+        if self.components:
+            self.elemental_composition = []
         super().normalize(archive, logger)
 
 
-class TargetReference(SectionReference):
+class TargetReference(EntityReference):
+    """
+    Describes the way the target is used in a sputter deposition process.
+    Includes:
+    - Link to the entry of the target
+    - Parameters of the mode of operation
+    """
+
     reference = Quantity(type=Target, a_eln=dict(component='ReferenceEditQuantity'))
 
     mode = Quantity(
-        type=MEnum(['DC', 'RF', 'Pulsed']),
-        description='Mode of operation of the target.',
-        a_eln={'component': 'RadioEnumEditQuantity'},
+        type=MEnum(['DC', 'DC Pulsed']),
+        description='Mode of operation this target was used in',
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.RadioEnumEditQuantity,
+            label='Operation Mode',
+        ),
     )
 
     setpoint_unit = Quantity(
         type=MEnum(['W', 'V', 'A']),
-        description='Setpoint mode of the target.',
-        a_eln={'component': 'RadioEnumEditQuantity'},
-    )
-    setpoint_value = Quantity(
-        type=float,
-        description='Setpoint value of the target.',
+        description='Setpoint mode for this target',
         a_eln=ELNAnnotation(
-            component=ELNComponentEnum.NumberEditQuantity,
+            component=ELNComponentEnum.RadioEnumEditQuantity,
+            label='Setpoint mode',
         ),
     )
 
@@ -694,6 +713,16 @@ class TargetReference(SectionReference):
         description='Voltage at the target during deposition',
     )
 
+    duration = Quantity(
+        type=float,
+        description='Duration for which the target is used during deposition',
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.NumberEditQuantity,
+            defaultDisplayUnit='second',
+        ),
+        unit='second',
+    )
+
     frequency = Quantity(
         type=float,
         description='Frequency of the target during deposition if not DC',
@@ -710,18 +739,45 @@ class TargetReference(SectionReference):
         ),
         a_eln=ELNAnnotation(
             component=ELNComponentEnum.NumberEditQuantity,
+            defaultDisplayUnit='microsecond',
         ),
         unit='microsecond',
     )
 
+    dose = Quantity(
+        type=float,
+        description="""Estimated energy input (dose)
+        that the target has experienced during deposition""",
+        unit='joule',
+        a_eln=ELNAnnotation(
+            defaultDisplayUnit='joule',
+        ),
+    )
+
+    def update_target_entry(self, logger: 'BoundLogger') -> None:
+        # TODO: Search for every linked process and update the target entry
+        if self.reference:
+            self.reference.total_depositions += 1
+            self.reference.total_dose += self.dose
+            for element in self.cross_contamination:
+                if element not in self.reference.cross_contamination:
+                    self.reference.cross_contamination.append(element)
+            self.reference.normalize(logger)
+
     def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
-        if self.setpoint_unit and self.setpoint_value:
-            if self.setpoint_unit == 'W':
-                self.power.set_value = self.setpoint_value * ureg.watt
-            elif self.setpoint_unit == 'V':
-                self.voltage.set_value = self.setpoint_value * ureg.volt
-            elif self.setpoint_unit == 'A':
-                self.current.set_value = self.setpoint_value * ureg.ampere
+        # Update name
+        if self.reference and self.reference.name:
+            self.name = self.reference.name
+
+        # Estimate the dose
+        if self.duration is not None and self.power is not None:
+            if self.mode == 'DC':
+                dose = np.median(self.power.value) * self.duration
+                self.dose = dose.to('joule')  # TODO: Check if this is necessary
+            elif self.mode == 'DC Pulsed':
+                on = self.frequency * (1 * ureg.s - self.pulse_reverse_time)
+                dose = np.median(self.power.value) * self.duration * on
+                self.dose = dose.to('joule')
 
 
 class Atmosphere(ArchiveSection):

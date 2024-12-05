@@ -39,11 +39,17 @@ class Power(TimeSeries):
         type=float,
         unit='watt',
         shape=['*'],
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.NumberEditQuantity,
+        ),
     )
     set_value = Quantity(
         type=float,
         unit='watt',
         shape=['*'],
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.NumberEditQuantity,
+        ),
     )
 
 
@@ -52,11 +58,17 @@ class Current(TimeSeries):
         type=float,
         unit='ampere',
         shape=['*'],
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.NumberEditQuantity,
+        ),
     )
     set_value = Quantity(
         type=float,
         unit='ampere',
         shape=['*'],
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.NumberEditQuantity,
+        ),
     )
 
 
@@ -65,11 +77,17 @@ class Voltage(TimeSeries):
         type=float,
         unit='volt',
         shape=['*'],
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.NumberEditQuantity,
+        ),
     )
     set_value = Quantity(
         type=float,
         unit='volt',
         shape=['*'],
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.NumberEditQuantity,
+        ),
     )
 
 
