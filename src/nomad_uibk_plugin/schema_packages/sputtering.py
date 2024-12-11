@@ -39,6 +39,7 @@ from structlog.stdlib import BoundLogger
 from nomad_uibk_plugin.schema_packages import UIBKCategory
 from nomad_uibk_plugin.schema_packages.basesections import (
     Current,
+    GasFlow,
     Power,
     Pressure,
     Voltage,
@@ -664,10 +665,73 @@ class Target(CompositeSystem, EntryData):
         repeats=True,
     )
 
+    def update_from_reference(
+        self, archive: 'EntryArchive', logger: 'BoundLogger'
+    ) -> None:
+        """
+        Update with information from references.
+        """
+
+        self.total_dose = 0
+        self.total_depositions = 0
+
+        from nomad.search import MetadataPagination, search
+
+        query = {
+            'section_defs.definition_qualified_name:all': [
+                'nomad_uibk_plugin.schema_packages.sputtering.TargetReference',
+            ],
+            'entry_references.target_entry_id:all': [
+                archive.metadata.entry_id,
+            ],
+        }
+
+        # Query a single reference at a time
+        page_after_value = None
+        while True:
+            search_result = search(
+                owner='all',
+                query=query,
+                pagination=MetadataPagination(
+                    page_size=1, page_after_value=page_after_value
+                ),
+                user_id=archive.metadata.main_author.user_id,
+            )
+
+            for result in search_result.data:
+                # flatten result list to dict
+                quantity_dict = {
+                    item['path_archive']: item for item in result['search_quantities']
+                }
+
+                # Get target names, doses and upate properties
+                left_name = quantity_dict.get('data.left_target.name')
+                left_dose = quantity_dict.get('data.left_target.dose')
+                right_name = quantity_dict.get('data.right_target.name')
+                right_dose = quantity_dict.get('data.right_target.dose')
+
+                if left_name and left_dose and left_name['string_value'] == self.name:
+                    self.total_depositions += 1
+                    self.total_dose += left_dose['float_value']
+                elif (
+                    right_name
+                    and right_dose
+                    and right_name['string_value'] == self.name
+                ):
+                    self.total_depositions += 1
+                    self.total_dose += right_dose['float_value']
+
+            if search_result.pagination.next_page_after_value:
+                page_after_value = search_result.pagination.next_page_after_value
+            else:
+                break
+
     def normalize(self, archive, logger: 'BoundLogger') -> None:
         if self.components:
             self.elemental_composition = []
+
         super().normalize(archive, logger)
+        self.update_from_reference(archive, logger)
 
 
 class TargetReference(EntityReference):
@@ -681,7 +745,7 @@ class TargetReference(EntityReference):
     reference = Quantity(type=Target, a_eln=dict(component='ReferenceEditQuantity'))
 
     mode = Quantity(
-        type=MEnum(['DC', 'DC Pulsed']),
+        type=MEnum(['DC Continuous', 'DC Pulsed']),
         description='Mode of operation this target was used in',
         a_eln=ELNAnnotation(
             component=ELNComponentEnum.RadioEnumEditQuantity,
@@ -723,7 +787,7 @@ class TargetReference(EntityReference):
         unit='second',
     )
 
-    frequency = Quantity(
+    pulse_frequency = Quantity(
         type=float,
         description='Frequency of the target during deposition if not DC',
         a_eln=ELNAnnotation(
@@ -754,17 +818,14 @@ class TargetReference(EntityReference):
         ),
     )
 
-    def update_target_entry(self, logger: 'BoundLogger') -> None:
-        # TODO: Search for every linked process and update the target entry
-        if self.reference:
-            self.reference.total_depositions += 1
-            self.reference.total_dose += self.dose
-            for element in self.cross_contamination:
-                if element not in self.reference.cross_contamination:
-                    self.reference.cross_contamination.append(element)
-            self.reference.normalize(logger)
-
     def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
+        """
+        Automations of TargetReference:
+        - Update the name of the target and estimate the dose if possible.
+        - Estimate the energy input (dose) the target has experienced during deposition.
+        - Update the target entry with the new information.
+        """
+
         # Update name
         if self.reference and self.reference.name:
             self.name = self.reference.name
@@ -775,51 +836,35 @@ class TargetReference(EntityReference):
                 dose = np.median(self.power.value) * self.duration
                 self.dose = dose.to('joule')  # TODO: Check if this is necessary
             elif self.mode == 'DC Pulsed':
-                on = self.frequency * (1 * ureg.s - self.pulse_reverse_time)
-                dose = np.median(self.power.value) * self.duration * on
+                active = self.frequency * (1 * ureg.s - self.pulse_reverse_time)
+                dose = np.median(self.power.value) * self.duration * active
                 self.dose = dose.to('joule')
+
+        # Update the target entry
 
 
 class Atmosphere(ArchiveSection):
-    setpoint_Ar = Quantity(
-        type=float,
-        description='Setpoint value for Argon flow',
-        a_eln=ELNAnnotation(
-            component=ELNComponentEnum.NumberEditQuantity,
-        ),
-        unit='centimeter**3/minute',
-    )
+    """
+    Describes the state of the atmosphere during the deposition.
+    """
 
-    setpoint_O2 = Quantity(
-        type=float,
-        description='Setpoint value for Oxygen flow',
-        a_eln=ELNAnnotation(
-            component=ELNComponentEnum.NumberEditQuantity,
-        ),
-        unit='centimeter**3/minute',
-    )
-
-    setpoint_N2 = Quantity(
-        type=float,
-        description='Setpoint value for Nitrogen flow',
-        a_eln=ELNAnnotation(
-            component=ELNComponentEnum.NumberEditQuantity,
-        ),
-        unit='centimeter**3/minute',
+    pressure = SubSection(
+        section_def=Pressure,
+        description='Pressure of the atmosphere during deposition',
     )
 
     Ar = SubSection(
-        section_def=Pressure,
+        section_def=GasFlow,
         description='Pressure of Argon during deposition',
     )
 
     O2 = SubSection(
-        section_def=Pressure,
+        section_def=GasFlow,
         description='Pressure of Oxygen during deposition',
     )
 
     N2 = SubSection(
-        section_def=Pressure,
+        section_def=GasFlow,
         description='Pressure of Nitrogen during deposition',
     )
 
@@ -854,32 +899,43 @@ class UIBKSputterDeposition(SputterDeposition, EntryData):
         unit='m',
     )
 
+    substrate_rotation = Quantity(
+        type=float,
+        description='Rotation speed of the substrate retainer in rpm',
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.NumberEditQuantity,
+            defaultDisplayUnit='rpm',
+        ),
+        unit='revolutions_per_second',
+    )
+
     parameters = SubSection(section_def=SputterParameters)
 
     def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
         """Update the data from the data file if it is not already set"""
 
-        from nomad_uibk_plugin.filereader.sputterreader import read_sputter_csv
+        from nomad_uibk_plugin.filereader.sputterreader import read_sputter_deposition
 
         # if self.data is None and self.data_file is not None:
         if self.log_file is not None:
             with archive.m_context.raw_file(self.log_file) as file:
-                sputter_entry = read_sputter_csv(file, logger)
+                sputter_entry = read_sputter_deposition(file, archive, logger)
                 merge_sections(self, sputter_entry, logger)
 
         # Add cross contamination to the targets and update dose
-        # TODO: Dose calculation
-        if self.target_left and self.target_right:
-            if self.target_left.reference and self.target_right.reference:
-                for composition in self.target_right.reference.elemental_composition:
-                    element = composition.element
-                    if element not in self.target_left.reference.cross_contamination:
-                        self.target_left.reference.cross_contamination.append(element)
+        # if (self.target_left and self.target_right and
+        #         self.target_left.reference is not None
+        #         and self.target_right.reference is not None
+        #     ):
+        #     for composition in self.target_right.reference.elemental_composition:
+        #         element = composition.element
+        #         if element not in self.target_left.reference.cross_contamination:
+        #             self.target_left.reference.cross_contamination.append(element)
 
-                for composition in self.target_left.reference.elemental_composition:
-                    element = composition.element
-                    if element not in self.target_right.reference.cross_contamination:
-                        self.target_right.reference.cross_contamination.append(element)
+        #     for composition in self.target_left.reference.elemental_composition:
+        #         element = composition.element
+        #         if element not in self.target_right.reference.cross_contamination:
+        #             self.target_right.reference.cross_contamination.append(element)
 
         super().normalize(archive, logger)
 

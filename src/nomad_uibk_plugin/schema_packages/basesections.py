@@ -22,7 +22,7 @@ from nomad.datamodel.metainfo.annotations import ELNAnnotation, ELNComponentEnum
 from nomad.datamodel.metainfo.basesections import (
     Process,
 )
-from nomad.metainfo import Quantity, SchemaPackage, SubSection
+from nomad.metainfo import Quantity, SchemaPackage, Section, SubSection
 from nomad_material_processing.vapor_deposition.general import TimeSeries
 
 from nomad_uibk_plugin.schema_packages.sample import UIBKSampleReference
@@ -35,6 +35,9 @@ m_package = SchemaPackage()
 
 
 class Power(TimeSeries):
+    m_def = Section(
+        a_eln=ELNAnnotation(hide=['set_time']),
+    )
     value = Quantity(
         type=float,
         unit='watt',
@@ -54,6 +57,9 @@ class Power(TimeSeries):
 
 
 class Current(TimeSeries):
+    m_def = Section(
+        a_eln=ELNAnnotation(hide=['set_time']),
+    )
     value = Quantity(
         type=float,
         unit='ampere',
@@ -73,6 +79,9 @@ class Current(TimeSeries):
 
 
 class Voltage(TimeSeries):
+    m_def = Section(
+        a_eln=ELNAnnotation(hide=['set_time']),
+    )
     value = Quantity(
         type=float,
         unit='volt',
@@ -87,20 +96,56 @@ class Voltage(TimeSeries):
         shape=['*'],
         a_eln=ELNAnnotation(
             component=ELNComponentEnum.NumberEditQuantity,
+        ),
+    )
+
+
+class GasFlow(TimeSeries):
+    m_def = Section(
+        a_eln=ELNAnnotation(hide=['set_time']),
+    )
+
+    value = Quantity(
+        type=float,
+        unit='cm^3/minute',
+        shape=['*'],
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.NumberEditQuantity,
+            defaultDisplayUnit='cm^3/minute',
+        ),
+    )
+    set_value = Quantity(
+        type=float,
+        unit='cm^3/minute',
+        shape=['*'],
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.NumberEditQuantity,
+            defaultDisplayUnit='cm^3/minute',
         ),
     )
 
 
 class Pressure(TimeSeries):
+    m_def = Section(
+        a_eln=ELNAnnotation(hide=['set_time']),
+    )
     value = Quantity(
         type=float,
         unit='pascal',
         shape=['*'],
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.NumberEditQuantity,
+            defaultDisplayUnit='mbar',
+        ),
     )
     set_value = Quantity(
         type=float,
         unit='pascal',
         shape=['*'],
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.NumberEditQuantity,
+            defaultDisplayUnit='mbar',
+        ),
     )
 
 
