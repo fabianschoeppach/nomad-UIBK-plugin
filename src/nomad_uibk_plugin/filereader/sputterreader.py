@@ -179,7 +179,7 @@ def read_csv_file(
     return metadata, dataframe
 
 
-def parse_target_references(  # noqa: PLR0912
+def parse_target_references(
     metadata: dict,
     dataframe: pd.DataFrame,
     archive: 'EntryArchive',
@@ -199,59 +199,56 @@ def parse_target_references(  # noqa: PLR0912
         A tuple of TargetReference instances for the left and right target.
     """
 
-    # Handle Target references
     # For now: Left = 1, Right = 2
-    # TODO:
+    # TODO: Reading which target is left and which is right from metadata
 
     target_left = None
     target_right = None
 
+    # Left target
     target_left_id = metadata.get('Target Left', [None])[0]
-    target_left_ref = find_reference_by_id(target_left_id, 'Target', archive, logger)
-    if target_left_ref:
-        target_left = TargetReference(
-            reference=target_left_ref,
-            power=Power(value=dataframe['P1_Watt'], time=dataframe['time']),
-            voltage=Voltage(value=dataframe['P1_Ampere'], time=dataframe['time']),
-            current=Current(value=dataframe['P1_Voltage'], time=dataframe['time']),
-        )
-        setpoint = metadata.get('Setpoint 1', None)
-        if setpoint:
-            if setpoint.dimensionality == ureg.W.dimensionality:
-                target_left.power.set_value = [setpoint]
-            elif setpoint.dimensionality == ureg.A.dimensionality:
-                target_left.current.set_value = [setpoint]
-            elif setpoint.dimensionality == ureg.V.dimensionality:
-                target_left.voltage.set_value = [setpoint]
-        if any(s.lower() for s in metadata.get('Power Supply 1 Type', [])):
-            target_left.mode = 'DC Pulsed'
-            target_left.pulse_frequency = metadata.get('Frequency 1', None)
-            target_left.pulse_reverse_time = metadata.get('Pulse Reverse Time 1', None)
-        else:
-            target_left.mode = 'DC Continuous'
+    target_left = TargetReference(
+        reference=find_reference_by_id(target_left_id, 'Target', archive, logger),
+        power=Power(value=dataframe['P1_Watt'], time=dataframe['time']),
+        voltage=Voltage(value=dataframe['P1_Ampere'], time=dataframe['time']),
+        current=Current(value=dataframe['P1_Voltage'], time=dataframe['time']),
+    )
+    setpoint = metadata.get('Setpoint 1', None)
+    if setpoint:
+        if setpoint.dimensionality == ureg.W.dimensionality:
+            target_left.power.set_value = [setpoint]
+        elif setpoint.dimensionality == ureg.A.dimensionality:
+            target_left.current.set_value = [setpoint]
+        elif setpoint.dimensionality == ureg.V.dimensionality:
+            target_left.voltage.set_value = [setpoint]
+    if any(s.lower() for s in metadata.get('Power Supply 1 Type', [])):
+        target_left.mode = 'DC Pulsed'
+        target_left.pulse_frequency = metadata.get('Frequency 1', None)
+        target_left.pulse_reverse_time = metadata.get('Pulse Reverse Time 1', None)
+    else:
+        target_left.mode = 'DC Continuous'
 
+    # Right target
     target_right_id = metadata.get('Target Right', [None])[0]
-    target_right_ref = find_reference_by_id(target_right_id, 'Target', archive, logger)
-    if target_right_ref:
-        target_right = TargetReference(
-            reference=target_right_ref,
-            power=Power(value=dataframe['P2_Watt'], time=dataframe['time']),
-            voltage=Voltage(value=dataframe['P2_Ampere'], time=dataframe['time']),
-            current=Current(value=dataframe['P2_Voltage'], time=dataframe['time']),
-        )
-        setpoint = metadata.get('Setpoint 2', None)
-        if setpoint:
-            if setpoint.dimensionality == ureg.W.dimensionality:
-                target_right.power.set_value = [setpoint]
-            elif setpoint.dimensionality == ureg.A.dimensionality:
-                target_right.current.set_value = [setpoint]
-            elif setpoint.dimensionality == ureg.V.dimensionality:
-                target_right.voltage.set_value = [setpoint]
-        if any(s.lower() for s in metadata.get('Power Supply 2 Type', [])):
-            target_right.mode = 'DC Pulsed'
-            target_right.pulse_frequency = metadata.get('Frequency 2', None)
-            target_right.pulse_reverse_time = metadata.get('Pulse Reverse Time 2', None)
-        else:
-            target_right.mode = 'DC Continuous'
+    target_right = TargetReference(
+        reference=find_reference_by_id(target_right_id, 'Target', archive, logger),
+        power=Power(value=dataframe['P2_Watt'], time=dataframe['time']),
+        voltage=Voltage(value=dataframe['P2_Ampere'], time=dataframe['time']),
+        current=Current(value=dataframe['P2_Voltage'], time=dataframe['time']),
+    )
+    setpoint = metadata.get('Setpoint 2', None)
+    if setpoint:
+        if setpoint.dimensionality == ureg.W.dimensionality:
+            target_right.power.set_value = [setpoint]
+        elif setpoint.dimensionality == ureg.A.dimensionality:
+            target_right.current.set_value = [setpoint]
+        elif setpoint.dimensionality == ureg.V.dimensionality:
+            target_right.voltage.set_value = [setpoint]
+    if any(s.lower() for s in metadata.get('Power Supply 2 Type', [])):
+        target_right.mode = 'DC Pulsed'
+        target_right.pulse_frequency = metadata.get('Frequency 2', None)
+        target_right.pulse_reverse_time = metadata.get('Pulse Reverse Time 2', None)
+    else:
+        target_right.mode = 'DC Continuous'
 
     return target_left, target_right
