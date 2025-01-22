@@ -14,9 +14,7 @@ from nomad.config import config
 from nomad.datamodel.results import Material, Results
 from nomad.parsing.parser import MatchingParser
 
-configuration = config.get_plugin_entry_point(
-    'nomad_uibk_plugin.parsers:myparser'
-)
+configuration = config.get_plugin_entry_point('nomad_uibk_plugin.parsers:myparser')
 
 
 class MyParser(MatchingParser):

@@ -30,12 +30,12 @@ if TYPE_CHECKING:
 
 
 def group_composition_into_layers(
-        layers: dict = {},
-        names: list = [],
-        values: list = [],
-        units: list = [],
-        logger: 'BoundLogger' = None,
-    ) -> dict:
+    layers: dict = {},
+    names: list = [],
+    values: list = [],
+    units: list = [],
+    logger: 'BoundLogger' = None,
+) -> dict:
     """
     Function for grouping the composition data into layers.
 
@@ -69,15 +69,14 @@ def group_composition_into_layers(
             if unit == 'mass%':
                 layers[current_layer]['elements'][name] = dict(mass_fraction=value)
             elif unit == 'at%':
-                layers[current_layer]['elements'][name] = dict(
-                    atomic_fraction=value
-                )
+                layers[current_layer]['elements'][name] = dict(atomic_fraction=value)
             elif logger is not None:
                 logger.warn(
                     'read_UIBK_txt found unknown unit "{unit}" '
                     'in file: "{file_path}"'
                 )
     return layers
+
 
 def sort_intensity_values_into_layers(  # noqa: PLR0913
     layers: dict = {},
@@ -133,6 +132,7 @@ def sort_intensity_values_into_layers(  # noqa: PLR0913
 
     return layers
 
+
 def read_xrf_txt(file_path: str, logger: 'BoundLogger' = None) -> dict[str, Any]:  # noqa: PLR0915, PLR0912
     """
     Function for reading the X-ray fluorescence data in a UIBK `.txt` file.
@@ -156,9 +156,11 @@ def read_xrf_txt(file_path: str, logger: 'BoundLogger' = None) -> dict[str, Any]
         if len(measurement) > 100:  # noqa: PLR2004
             # Try to match meta information
             meta_match = re.search(
-                (r'PositionType\s+Application\s+Sample name\s+Date\s+(\S+)\s+'
-                 r'Quant analysis\s+(\S+(?:\s\S+)*)\s+(\S+)\s+'
-                 r'(\d{4}-\s*\d{1,2}-\s*\d{1,2}\s+\d{1,2}:\d{2})'),
+                (
+                    r'PositionType\s+Application\s+Sample name\s+Date\s+(\S+)\s+'
+                    r'Quant analysis\s+(\S+(?:\s\S+)*)\s+(\S+)\s+'
+                    r'(\d{4}-\s*\d{1,2}-\s*\d{1,2}\s+\d{1,2}:\d{2})'
+                ),
                 measurement,
             )
 

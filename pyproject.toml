@@ -28,7 +28,8 @@ license = { file = "LICENSE" }
 dependencies = [
     "nomad-lab>=1.2.2dev578",
     "nomad-measurements>=0.0.05",
-    "nomad-material-processing>=0.0.10"
+    "nomad-material-processing>=0.0.10",
+    "ifm-image-defect-detection" # @ git+https://github.com/csav1974/IFM-Image-Defect-Detection-and-Classification.git@pyproject-ready"
     ]
 
 [project.urls]
@@ -119,3 +120,4 @@ xrfparser = "nomad_uibk_plugin.parsers:xrfparser"
 microcellschema = "nomad_uibk_plugin.schema_packages:microcellschema"
 ifmparser = "nomad_uibk_plugin.parsers:ifmparser"
 ebicparser = "nomad_uibk_plugin.parsers:ebicparser"
+ifmschema = "nomad_uibk_plugin.schema_packages:ifmschema"

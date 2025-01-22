@@ -51,3 +51,16 @@ microcellschema = MicroCellSchemaPackageEntryPoint(
     name='MicroCellSchema',
     description='MicroCell Schema package defined using the new plugin mechanism.',
 )
+
+
+class IFMSchemaPackageEntryPoint(SchemaPackageEntryPoint):
+    def load(self):
+        from nomad_uibk_plugin.schema_packages.IFMschema import m_package
+
+        return m_package
+
+
+ifmschema = IFMSchemaPackageEntryPoint(
+    name='IFMSchema',
+    description='IFM Schema package.',
+)
