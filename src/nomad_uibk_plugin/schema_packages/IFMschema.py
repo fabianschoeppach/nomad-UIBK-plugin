@@ -21,16 +21,19 @@ from typing import (
     TYPE_CHECKING,
 )
 
-from nomad.datamodel.data import EntryData  # ArchiveSection
+import pandas as pd
+import plotly.graph_objs as go
+from nomad.datamodel.data import ArchiveSection, EntryData
 from nomad.datamodel.metainfo.annotations import ELNAnnotation, ELNComponentEnum
 from nomad.datamodel.metainfo.basesections import Entity, SectionReference
 from nomad.datamodel.metainfo.eln import ELNAnalysis, ELNMeasurement
+from nomad.datamodel.metainfo.plot import PlotlyFigure, PlotSection
 from nomad.datamodel.metainfo.workflow import Link
 from nomad.metainfo import Datetime, MEnum, Quantity, SchemaPackage, Section, SubSection
 from nomad_measurements.utils import (
-    create_archive,
-    get_entry_id_from_file_name,
-    get_reference,
+    # create_archive,
+    # get_entry_id_from_file_name,
+    # get_reference,
     merge_sections,
 )
 from pint import UnitRegistry
@@ -164,20 +167,36 @@ class IFMModel(Entity, EntryData):
                 merge_sections(self, model, logger)
 
 
-class IFMAnalysisOutput(EntryData):
+class DefectPrevalence(ArchiveSection):
+    whiskers = Quantity(
+        type=float,
+        description='Prevalence of whiskers.',
+    )
+    chipping = Quantity(
+        type=float,
+        description='Prevalence of chipping.',
+    )
+    scratch = Quantity(
+        type=float,
+        description='Prevalence of scratches.',
+    )
+    no_error = Quantity(
+        type=float,
+        description='Prevalence of no errors.',
+    )
+
+
+class IFMAnalysisResult(ArchiveSection):
     file = Quantity(
         type=str,
         description='File containing the data.',
         a_eln=ELNAnnotation(component=ELNComponentEnum.FileEditQuantity),
     )
 
-
-class IFMAnalysedImage(IFMAnalysisOutput):
-    pass
-
-
-class IFMExtractedFeatures(IFMAnalysisOutput):
-    pass
+    defect_prevalence = SubSection(
+        section_def=DefectPrevalence,
+        description='Prevalence of defects in the image.',
+    )
 
 
 class ImageReference(SectionReference):
@@ -202,18 +221,7 @@ class ModelReference(SectionReference):
     )
 
 
-class OutputReference(SectionReference):
-    reference = Quantity(
-        type=IFMAnalysisOutput,
-        description='Reference to the IFM analysis output.',
-        a_eln=ELNAnnotation(
-            component='ReferenceEditQuantity',
-            label='section reference',
-        ),
-    )
-
-
-class IFMTwoStepAnalysis(ELNAnalysis):
+class IFMTwoStepAnalysis(ELNAnalysis, PlotSection):
     """
     Automated image analysis entry.
     """
@@ -229,7 +237,7 @@ class IFMTwoStepAnalysis(ELNAnalysis):
         repeats=True,
     )
     outputs = SubSection(
-        section_def=OutputReference,
+        section_def=IFMAnalysisResult,
         description='Output data from the automated image analysis.',
         repeats=True,
     )
@@ -293,8 +301,10 @@ class IFMTwoStepAnalysis(ELNAnalysis):
                     path, filename_with_ext = os.path.split(image_file.name)
                     filename, ext = os.path.splitext(filename_with_ext)
                     csv_path = os.path.join(path, f'{filename}_prediction.csv')
-                    csv_archive_name = f'{filename}_prediction.archive.json'
+                    # csv_archive_name = f'{filename}_prediction.archive.json'
 
+                    # perform the analysis if the csv file does not yet exist and
+                    # the user has checked the box
                     if self.perform_analysis and not os.path.exists(csv_path):
                         logger.info('Performing the analysis...')
                         from ifm_image_defect_detection.defectRecognition_toCSV import (
@@ -305,21 +315,69 @@ class IFMTwoStepAnalysis(ELNAnalysis):
                             image_file.name, model_binary.name, model_classiciation.name
                         )
 
-                        feature_entry = IFMExtractedFeatures(file=csv_path)
-                        create_archive(feature_entry, archive, csv_archive_name)
+                    # create result subsection
+                    analysis_entry = IFMAnalysisResult(file=csv_path)
 
-                    output_reference = OutputReference(
-                        reference=get_reference(
-                            archive.metadata.upload_id,
-                            get_entry_id_from_file_name(csv_archive_name, archive),
-                        )
+                    # read
+                    defect_data = pd.read_csv(csv_path, skiprows=2)
+                    defect_columns = ['Whiskers', 'Chipping', 'Scratch', 'No Error']
+                    defect_data['type'] = defect_data[defect_columns].idxmax(axis=1)
+                    relative_share = defect_data['type'].value_counts(normalize=True)
+
+                    analysis_entry.defect_prevalence = DefectPrevalence(
+                        whiskers=relative_share.get('Whiskers', 0),
+                        chipping=relative_share.get('Chipping', 0),
+                        scratch=relative_share.get('Scratch', 0),
+                        no_error=relative_share.get('No Error', 0),
                     )
-                    self.outputs.append(output_reference)
 
+                    # add the result to the analysis output and update the workflow
+                    self.outputs.append(analysis_entry)
                     archive.workflow2.outputs.append(
                         Link(
                             name='Extracted Features',
-                            section=output_reference.reference,
+                            section=analysis_entry,
+                        )
+                    )
+
+                    # create plot
+                    defect_mapping = {
+                        'Whiskers': 1,
+                        'Chipping': 2,
+                        'Scratch': 3,
+                        'No Error': 4,
+                    }
+                    defect_data['label'] = defect_data['type'].map(defect_mapping)
+
+                    heatmap = go.Heatmap(
+                        x=defect_data['x'],
+                        y=defect_data['y'],
+                        z=defect_data['label'],
+                        colorscale='Viridis',
+                        colorbar=dict(
+                            tickvals=[1, 2, 3, 4],
+                            ticktext=defect_columns,
+                            title='Defect Type',
+                        ),
+                    )
+
+                    figure = go.Figure(data=heatmap)
+                    figure.update_layout(
+                        title='Heatmap of Defect Distribution',
+                        xaxis_title='X Position',
+                        yaxis_title='Y Position',
+                        xaxis=dict(scaleanchor='y'),
+                        yaxis=dict(scaleanchor='x'),
+                        autosize=True,
+                    )
+
+                    figure_json = figure.to_plotly_json()
+                    figure_json['config'] = {'staticPlot': True}
+                    self.figures.append(
+                        PlotlyFigure(
+                            label='Defect Distribution Heatmap',
+                            index=0,
+                            figure=figure_json,
                         )
                     )
 
