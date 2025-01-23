@@ -72,8 +72,7 @@ def group_composition_into_layers(
                 layers[current_layer]['elements'][name] = dict(atomic_fraction=value)
             elif logger is not None:
                 logger.warn(
-                    'read_UIBK_txt found unknown unit "{unit}" '
-                    'in file: "{file_path}"'
+                    'read_UIBK_txt found unknown unit "{unit}" in file: "{file_path}"'
                 )
     return layers
 
