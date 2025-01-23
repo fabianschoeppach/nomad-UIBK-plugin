@@ -29,7 +29,7 @@ class RawFileSEMData(EntryData):
     )
 
 
-class XRFParser(MatchingParser):
+class SEMParser(MatchingParser):
     """
     Parser for matching SEM files and creating instances of SEM.
     """
