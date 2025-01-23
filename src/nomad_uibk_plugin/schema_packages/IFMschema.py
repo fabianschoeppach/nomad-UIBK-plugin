@@ -25,7 +25,10 @@ import pandas as pd
 import plotly.graph_objs as go
 from nomad.datamodel.data import ArchiveSection, EntryData
 from nomad.datamodel.metainfo.annotations import ELNAnnotation, ELNComponentEnum
-from nomad.datamodel.metainfo.basesections import Entity, SectionReference
+from nomad.datamodel.metainfo.basesections import (
+    Entity,
+    EntityReference,
+)
 from nomad.datamodel.metainfo.eln import ELNAnalysis, ELNMeasurement
 from nomad.datamodel.metainfo.plot import PlotlyFigure, PlotSection
 from nomad.datamodel.metainfo.workflow import Link
@@ -39,6 +42,7 @@ from nomad_measurements.utils import (
 from pint import UnitRegistry
 
 from nomad_uibk_plugin.schema_packages import UIBKCategory
+from nomad_uibk_plugin.schema_packages.sample import UIBKSampleReference
 
 if TYPE_CHECKING:
     from nomad.datamodel import EntryArchive
@@ -69,6 +73,20 @@ class IFMMeasurement(ELNMeasurement):
         type=str,
         description='File containing the measurement metadata.',
         a_eln=ELNAnnotation(component=ELNComponentEnum.FileEditQuantity),
+    )
+
+    # Overwrite sample references with UIBKSampleReference
+    samples = SubSection(
+        section_def=UIBKSampleReference,
+        description="""
+        A list of all the samples measured during the measurement.
+        """,
+        repeats=True,
+    )
+    sample_id = Quantity(
+        type=str,
+        description='ID of the sample measured.',
+        a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity),
     )
 
     # Metadata Quantities
@@ -104,11 +122,14 @@ class IFMMeasurement(ELNMeasurement):
 
     def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger'):
         """
-        Read the metadata file and extract information from it.
+        Tasks in here:
+        - Read the metadata file and extract information from it.
+        - Update the sample references if lab_id is given.
         """
-        super().normalize(archive, logger)
+
         self.method = 'IFM Measurement'
 
+        # Read metadata from file
         if self.metadata_file is not None:
             logger.info('Metadata file recognized. Parsing...')
 
@@ -117,6 +138,20 @@ class IFMMeasurement(ELNMeasurement):
             with archive.m_context.raw_file(self.metadata_file) as file:
                 measurement = read_ifm_xml(file, archive, logger)
                 merge_sections(self, measurement, logger)
+
+        # Update sample references
+        if self.sample_id and not self.samples:
+            self.samples = [
+                UIBKSampleReference(name=self.sample_id, lab_id=self.sample_id)
+            ]
+        elif self.samples and not self.sample_id:
+            self.sample_id = self.samples[0].lab_id
+
+        # Update measurement name
+        if self.samples:
+            self.name = f'IFM Measurement of {self.samples[0].name}'
+
+        super().normalize(archive, logger)
 
 
 class IFMModel(Entity, EntryData):
@@ -199,7 +234,7 @@ class IFMAnalysisResult(ArchiveSection):
     )
 
 
-class ImageReference(SectionReference):
+class ImageReference(EntityReference):
     reference = Quantity(
         type=IFMMeasurement,
         description='Reference to the IFM measurement.',
@@ -209,8 +244,15 @@ class ImageReference(SectionReference):
         ),
     )
 
+    def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger'):
+        super().normalize(archive, logger)
 
-class ModelReference(SectionReference):
+        # Update name
+        if self.reference and self.name is None:
+            self.name = self.reference.name
+
+
+class ModelReference(EntityReference):
     reference = Quantity(
         type=IFMModel,
         description='Reference to the IFM model.',
@@ -219,6 +261,13 @@ class ModelReference(SectionReference):
             label='section reference',
         ),
     )
+
+    def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger'):
+        super().normalize(archive, logger)
+
+        # Update name
+        if self.reference and self.name is None:
+            self.name = self.reference.name
 
 
 class IFMTwoStepAnalysis(ELNAnalysis, PlotSection):

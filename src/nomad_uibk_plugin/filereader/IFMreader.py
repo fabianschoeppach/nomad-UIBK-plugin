@@ -48,7 +48,10 @@ def read_ifm_xml(
     description = root.find('.//description').text
     metadata = parse_description_field(description)
 
-    # parse other metadata fields
+    # parse other XML fields
+    sample_id = root.find('.//generalData/name').text
+    if sample_id:
+        metadata['sample_id'] = sample_id
     device = root.find('.//generalData/deviceName').text
     if device:
         metadata['device'] = device
