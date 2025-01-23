@@ -8,6 +8,8 @@ on:
       - main
   workflow_dispatch:
 
+env:
+  UV_SYSTEM_PYTHON: true
 
 jobs:
   test:
@@ -46,9 +48,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Lint and format with Ruff
+      - name: Lint with Ruff
         uses: chartboost/ruff-action@v1
         with:
-          args: |
-            check .
-            format . --check
+          args: check .
+
+      - name: Format check with Ruff
+        uses: chartboost/ruff-action@v1
+        with:
+          args: format . --check
