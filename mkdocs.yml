@@ -11,7 +11,6 @@ nav:
       - Install this Plugin: how_to/install_this_plugin.md
       - Use this Plugin: how_to/use_this_plugin.md
       - Contribute to this plugin: how_to/contribute_to_this_plugin.md
-      - Contribute to the documentation: how_to/contribute_to_the_documentation.md
   - Explanation: explanation/explanation.md
   - Reference: reference/references.md
 plugins:
