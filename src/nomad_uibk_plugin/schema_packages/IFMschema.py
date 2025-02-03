@@ -327,10 +327,9 @@ class IFMTwoStepAnalysis(ELNAnalysis, PlotSection):
                 )
             )
 
+        # check if all necessary inputs are given
         if self.inputs and self.model_binary and self.model_classiciation:
-            logger.info(
-                'Two Models found. Ready for IFM Two Step Analysis normalization'
-            )
+            logger.info('Two Models found. Ready for IFM Two Step Analysis.')
 
             self.outputs = []
             for input in self.inputs:
@@ -355,7 +354,7 @@ class IFMTwoStepAnalysis(ELNAnalysis, PlotSection):
                     # perform the analysis if the csv file does not yet exist and
                     # the user has checked the box
                     if self.perform_analysis and not os.path.exists(csv_path):
-                        logger.info('Performing the analysis...')
+                        logger.info('Extracting defects...')
                         from ifm_image_defect_detection.defectRecognition_toCSV import (
                             defect_recognition,
                         )
@@ -364,10 +363,17 @@ class IFMTwoStepAnalysis(ELNAnalysis, PlotSection):
                             image_file.name, model_binary.name, model_classiciation.name
                         )
 
+                    if not os.path.exists(csv_path):
+                        logger.warn(
+                            'The csv file does not exist. Please (re)run the analysis '
+                            'by checking "perform analysis" (again).'
+                        )
+                        continue
+
                     # create result subsection
                     analysis_entry = IFMAnalysisResult(file=csv_path)
 
-                    # read
+                    # read csv file and extract the defect prevalence
                     defect_data = pd.read_csv(csv_path, skiprows=2)
                     defect_columns = ['Whiskers', 'Chipping', 'Scratch', 'No Error']
                     defect_data['type'] = defect_data[defect_columns].idxmax(axis=1)
@@ -430,7 +436,7 @@ class IFMTwoStepAnalysis(ELNAnalysis, PlotSection):
                         )
                     )
 
-                self.perform_analysis = False
+            self.perform_analysis = False
 
 
 m_package.__init_metainfo__()
