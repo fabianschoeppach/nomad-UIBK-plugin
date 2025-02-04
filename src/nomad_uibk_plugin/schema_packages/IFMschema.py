@@ -294,7 +294,7 @@ class IFMTwoStepAnalysis(ELNAnalysis, PlotSection):
         section_def=ModelReference,
         description='Model for the automated image analysis.',
     )
-    model_classiciation = SubSection(
+    model_classification = SubSection(
         section_def=ModelReference,
         description='Model for the automated image analysis.',
     )
@@ -319,16 +319,16 @@ class IFMTwoStepAnalysis(ELNAnalysis, PlotSection):
             archive.workflow2.inputs.append(
                 Link(name='Binary Model', section=self.model_binary.reference)
             )
-        if self.model_classiciation:
+        if self.model_classification:
             archive.workflow2.inputs.append(
                 Link(
                     name='Classification Model',
-                    section=self.model_classiciation.reference,
+                    section=self.model_classification.reference,
                 )
             )
 
         # check if all necessary inputs are given
-        if self.inputs and self.model_binary and self.model_classiciation:
+        if self.inputs and self.model_binary and self.model_classification:
             logger.info('Two Models found. Ready for IFM Two Step Analysis.')
 
             self.outputs = []
@@ -342,7 +342,7 @@ class IFMTwoStepAnalysis(ELNAnalysis, PlotSection):
                         self.model_binary.reference.file
                     ) as model_binary,
                     archive.m_context.raw_file(
-                        self.model_classiciation.reference.file
+                        self.model_classification.reference.file
                     ) as model_classiciation,
                 ):
                     # create paths and names for the csv file and archive file
