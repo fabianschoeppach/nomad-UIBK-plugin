@@ -1,0 +1,118 @@
+<Object3D type="IFM" signature="0">
+  <generalData>
+    <name>20240829_A1-2</name>
+    <specimenName></specimenName>
+    <creatorName>Administrator</creatorName>
+    <creationDateTime>2024-09-30T18:23:51</creationDateTime>
+    <deviceName>IFM G4g Measurement Device 017111212409; IF-LaboratoryMeasurementModule 4.1</deviceName>
+    <description>Verarbeitungsstart: Montag, 30. September 2024 16:17:34&#xd;
+Verarbeitungsende: Montag, 30. September 2024 18:16:00&#xd;
+Benötigte Zeit: 1.974 h&#xd;
+Produkt-ID: H211009024&#xd;
+IFM Seriennummer: 017111212409&#xd;
+&#xd;
+Spezifische Werte:&#xd;
+Startposition der Messung:&#xd;
+	x: 0.0000nm&#xd;
+	y: 0.0000nm&#xd;
+	z: 0.0000nm&#xd;
+Endposition der Messung:&#xd;
+	x: 3.0000cm&#xd;
+	y: 3.0000cm&#xd;
+	z: 0.0000nm&#xd;
+Geschätzte Vertikale Auflösung: 28.6355nm&#xd;
+Geschätzte Laterale Auflösung: 3.9142µm&#xd;
+&#xd;
+Anzahl der Bilder: 34 Zeile(n) x 25 Spalte(n)&#xd;
+Vignettierungskorrektur: Nein&#xd;
+Dezimierung: 2 (1, 2)&#xd;
+&#xd;
+Automatischer Dezimierungswert nach aufgetretenem Fehler: 1&#xd;
+&#xd;
+Messeinstellungen:&#xd;
+Belichtungszeit: 199.0 µs&#xd;
+Kontrast: 0.05&#xd;
+Vergrößerung: 9.98687x&#xd;
+z-Position vor der Messung: -52.3650µm&#xd;
+Sättigung: 1&#xd;
+Verstärkung: 1&#xd;
+Untere Histogrammgrenze: 0 / 255&#xd;
+Obere Histogrammgrenze: 255 / 255&#xd;
+XSmartFlash: Nein&#xd;
+Autofokus verwendet: Ja&#xd;
+Anpassen des Abtastabstandes an laterale Auflösung: Ja&#xd;
+Polarisator: Deaktiviert&#xd;
+Aufnahmebereich: 50.0000µm&#xd;
+&#xd;
+Lichtquellen-Einstellungen:&#xd;
+Name: Alicona Imaging IFM G4 Lightsource Version 2&#xd;
+Koaxiale Beleuchtung verfügbar: Ja&#xd;
+Ringlicht verfügbar: Ja&#xd;
+Beleuchtung koaxiales Licht: 1&#xd;
+Beleuchtung Ringlicht: 0&#xd;
+&#xd;
+Systemjustierungs-Status: ADJUSTED_AND_CALIBRATED_BUT_EXPIRED&#xd;
+&#xd;
+Experten-Messeinstellungen:&#xd;
+XSmartFlash Faktor: 5&#xd;
+Datenerfassung mit hoher Geschwindigkeit: Ja&#xd;
+Ausreißer entfernen: 0.64&#xd;
+Wiederholbarkeit automatisch einstellen: Nein&#xd;
+Replikamodus: Nein&#xd;
+&#xd;
+Information für Support:&#xd;
+MAMB: 2400&#xd;
+AV: 5&#xd;
+AAV: Ja&#xd;
+SIS: Nein&#xd;
+HAC: Ja&#xd;
+CM: Ja&#xd;
+RE: Nein&#xd;
+RM: Nein&#xd;
+VDT: 0.5&#xd;
+FCM: Ja</description>
+    <softwareVersion>
+      <major>4</major>
+      <minor>0</minor>
+    </softwareVersion>
+  </generalData>
+  <generalCalibrationData>
+    <pixelsize>
+      <vector size="2">0.00000176231460384174 0.00000176231460384174 </vector>
+    </pixelsize>
+    <pixelsizeTolerance>
+      <vector size="3">0.00000008811573019209 0.00000008811573019209 0.00000000000000000000 </vector>
+    </pixelsizeTolerance>
+    <resolution>
+      <vector size="2">18042.000000 17678.000000 </vector>
+    </resolution>
+    <baseline>
+      <vector size="2">0.000000 0.000000 </vector>
+    </baseline>
+    <specimenMatrix>
+      <matrix cols="4" rows="4">
+        <vector size="4">1.000000000000 0.000000000000 0.000000000000 0.000000000000 </vector>
+        <vector size="4">0.000000000000 1.000000000000 0.000000000000 0.000000000000 </vector>
+        <vector size="4">0.000000000000 0.000000000000 1.000000000000 0.000000000000 </vector>
+        <vector size="4">0.000000000000 0.000000000000 0.000000000000 1.000000000000 </vector>
+      </matrix>
+    </specimenMatrix>
+    <worldMatrix>
+      <matrix cols="4" rows="4">
+        <vector size="4">1.000000000000 0.000000000000 0.000000000000 -0.000947820541 </vector>
+        <vector size="4">0.000000000000 1.000000000000 0.000000000000 -0.000598523511 </vector>
+        <vector size="4">0.000000000000 0.000000000000 1.000000000000 0.000000000000 </vector>
+        <vector size="4">0.000000000000 0.000000000000 0.000000000000 1.000000000000 </vector>
+      </matrix>
+    </worldMatrix>
+  </generalCalibrationData>
+  <real3DData>
+    <axis z1="0.00000000000000000000" y1="0.00000000000000000000" z2="0.00000000000000000000" x1="0.00000000000000000000" y2="0.00000000000000000000" x2="0.00000000000000000000"/>
+  </real3DData>
+  <ifmData>
+    <magnification>9.98687</magnification>
+    <objectiveName>IFM G4 10x</objectiveName>
+    <tubusName>IFM G4g Measurement Device</tubusName>
+    <lightIntensity>1</lightIntensity>
+  </ifmData>
+</Object3D>
