@@ -1,0 +1,36 @@
+{
+    "data": {
+        "m_def": "nomad_uibk_plugin.schema_packages.IFMschema.IFMTwoStepAnalysis",
+        "name": "Analysis",
+        "datetime": "2025-02-03T11:56:24.554649+00:00",
+        "method": "IFM Two Step Analysis",
+        "perform_analysis": true,
+        "inputs": [
+            {
+                "name": "IFM Measurement of 20240829_A1-2",
+                "reference": "../uploads/FtqPb7zYT9Oeqhfq38SWdw/archive/b1uMsiWObSdpPVtizocphS5W5V88#/data"
+            }
+        ],
+        "model_binary": {
+            "name": "Binary Model",
+            "reference": "../uploads/FtqPb7zYT9Oeqhfq38SWdw/archive/zzrbk-ah_x1erGdC5AS7YSNLsnIk#/data"
+        },
+        "model_classification": {
+            "name": "Classification Model",
+            "reference": "../uploads/FtqPb7zYT9Oeqhfq38SWdw/archive/vdtq2SXRkV6VIeWbNYcyI6AMKJjA#data"
+        }
+    },
+    "workflow2": {
+        "name": "Analysis",
+        "inputs": [
+            {
+                "name": "IFM Measurement of 20240829_A1-2",
+                "section": "../uploads/FtqPb7zYT9Oeqhfq38SWdw/archive/b1uMsiWObSdpPVtizocphS5W5V88#/data"
+            },
+            {
+                "name": "Binary Model",
+                "section": "../uploads/FtqPb7zYT9Oeqhfq38SWdw/archive/zzrbk-ah_x1erGdC5AS7YSNLsnIk#/data"
+            }
+        ]
+    }
+}

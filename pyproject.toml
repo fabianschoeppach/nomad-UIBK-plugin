@@ -27,11 +27,16 @@ maintainers = [
 license = { file = "LICENSE" }
 dependencies = [
     "nomad-lab>=1.2.2dev578",
-    "nomad-measurements>=0.0.05"
+    "nomad-measurements>=0.0.05",
+    "nomad-material-processing>=0.0.10",
+    "ifm-image-defect-detection @ git+https://github.com/csav1974/IFM-Image-Defect-Detection-and-Classification.git@pyproject-ready"
     ]
 
 [project.urls]
 Repository = "https://github.com/fabianschoeppach/nomad-uibk-plugin"
+
+[tool.uv]
+index-url = "https://gitlab.mpcdf.mpg.de/api/v4/projects/2187/packages/pypi/simple"
 
 [project.optional-dependencies]
 dev = ["ruff", "pytest", "structlog"]
@@ -111,7 +116,13 @@ package-dir = { "" = "src" }
 where = ["src"]
 
 [project.entry-points.'nomad.plugin']
-myparser = "nomad_uibk_plugin.parsers:myparser"
-mypackage = "nomad_uibk_plugin.schema_packages:mypackage"
+# schema
+sample = "nomad_uibk_plugin.schema_packages:sample"
 xrfschema = "nomad_uibk_plugin.schema_packages:xrfschema"
+ifmschema = "nomad_uibk_plugin.schema_packages:ifmschema"
+# parser
 xrfparser = "nomad_uibk_plugin.parsers:xrfparser"
+# unsure
+#microcellschema = "nomad_uibk_plugin.schema_packages:microcellschema"
+#ifmparser = "nomad_uibk_plugin.parsers:ifmparser"
+#ebicparser = "nomad_uibk_plugin.parsers:ebicparser"

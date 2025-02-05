@@ -1,0 +1,31 @@
+{
+    "data": {
+        "m_def": "nomad_uibk_plugin.schema_packages.IFMschema.IFMMeasurement",
+        "name": "IFM Measurement of 20240829_A1-2",
+        "datetime": "2025-01-24T15:24:36.336548+00:00",
+        "method": "IFM Measurement",
+        "image_file": "IFM_Sample.bmp",
+        "metadata_file": "IFM_Sample_1_info.xml",
+        "sample_id": "20240829_A1-2",
+        "start_time": "2024-09-30T16:17:34+00:00",
+        "end_time": "2024-09-30T18:16:00+00:00",
+        "exposure_time": 0.00019899999999999999,
+        "device": "IFM G4g Measurement Device 017111212409; IF-LaboratoryMeasurementModule 4.1",
+        "magnification": 9.98687,
+        "samples": [
+            {
+                "name": "20240829_A1-2",
+                "lab_id": "20240829_A1-2",
+                "reference": "../uploads/MPQltdOcQTegrRyoOk2wlA/archive/jUN7vUphdHT3d7sLHwocj3JF96sH#data"
+            }
+        ]
+    },
+    "workflow2": {
+        "name": "Measurement",
+        "inputs": [
+            {
+                "name": "20240829_A1-2"
+            }
+        ]
+    }
+}
