@@ -6,7 +6,8 @@ repo_url: https://github.com/fabianschoeppach/nomad-uibk-plugin
 
 nav:
   - Home: index.md
-  - Tutorial: tutorial/tutorial.md
+  - Tutorial: 
+      - IFM Tutorial: tutorial/tutorial_ifm.md
   - How-to guides:
       - Install this Plugin: how_to/install_this_plugin.md
       - Use this Plugin: how_to/use_this_plugin.md

@@ -1,5 +1,5 @@
-# Tutorial
+# Tutorials
 
-!!! warning "TODO"
-    This project is currently under development.
-    This documentation will be extended in the future.
+- [IFM Tutorial](tutorial_ifm.md)
+
+Stay tuned for more tutorials coming soon!

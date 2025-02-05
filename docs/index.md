@@ -11,7 +11,9 @@ It is intended to run on a self-hosted version of NOMAD called [Oasis](https://n
 
 ### Tutorial
 
-- [Tutorial](tutorial/tutorial.md)
+[Tutorials](tutorial/tutorial.md) offer practical, hands-on examples to help users grasp the functionality of the plugin. They focus on guiding users through specific tasks and workflows, providing a learning-by-doing approach to mastering the plugin's features.
+
+- [IFM Tutorial](tutorial/tutorial_ifm.md)
 
 </div>
 <div markdown="block">
