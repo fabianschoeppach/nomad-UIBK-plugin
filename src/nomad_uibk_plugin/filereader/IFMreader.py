@@ -33,6 +33,7 @@ if TYPE_CHECKING:
 # set locale for parsing dates
 locale.setlocale(locale.LC_TIME, 'de_DE.UTF-8')
 
+
 def read_ifm_xml(
     file_obj: TextIO, archive: 'EntryArchive', logger: 'BoundLogger'
 ) -> IFMMeasurement:
