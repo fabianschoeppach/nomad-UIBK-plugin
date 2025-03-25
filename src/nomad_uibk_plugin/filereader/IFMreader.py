@@ -16,6 +16,7 @@
 # limitations under the License.
 #
 
+import locale
 import re
 import xml.etree.ElementTree as ET
 from datetime import datetime
@@ -29,6 +30,8 @@ if TYPE_CHECKING:
     from nomad.datamodel.datamodel import EntryArchive
     from structlog.stdlib import BoundLogger
 
+# set locale for parsing dates
+locale.setlocale(locale.LC_TIME, 'de_DE.UTF-8')
 
 def read_ifm_xml(
     file_obj: TextIO, archive: 'EntryArchive', logger: 'BoundLogger'
